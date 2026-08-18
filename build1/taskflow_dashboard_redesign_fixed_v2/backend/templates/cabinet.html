@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block main %}
+<div class="page-container">
+    <h1 class="page-title">{{ t('cabinet_title') }}</h1>
+    <div class="cabinet-header">
+        <div class="cabinet-avatar" style="background:{{ current_user.color }}">
+            {{ current_user.username[0]|upper }}
+        </div>
+        <div class="cabinet-info">
+            <h2>{{ current_user.username }}</h2>
+            <p>{{ t('cabinet_member') }}</p>
+        </div>
+    </div>
+    <div class="stats-row">
+        <div class="stat-card total">
+            <div class="stat-number">{{ cabinet_stats.total }}</div>
+            <div class="stat-label">{{ t('tasks_total') }}</div>
+        </div>
+        <div class="stat-card active">
+            <div class="stat-number">{{ cabinet_stats.active }}</div>
+            <div class="stat-label">{{ t('tasks_active') }}</div>
+        </div>
+        <div class="stat-card done">
+            <div class="stat-number">{{ cabinet_stats.done }}</div>
+            <div class="stat-label">{{ t('tasks_done') }}</div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,333 @@
+{
+  "settings": {
+    "conversion_rate": 0.14
+  },
+  "projects": [
+    {
+      "id": 1,
+      "name": "Проект ЗВК Новосілки",
+      "entries": [
+        {
+          "section": "revenue",
+          "category": "",
+          "description": "Авим Констракшн",
+          "amount": 132000.0,
+          "date": "2026-05-29",
+          "note": "",
+          "id": 1
+        },
+        {
+          "section": "cashless",
+          "category": "",
+          "description": "ФОП Приходько",
+          "amount": 74468.09,
+          "date": "2026-05-27",
+          "note": "",
+          "id": 2
+        },
+        {
+          "section": "cashless",
+          "category": "",
+          "description": "Буддвір (ком)",
+          "amount": 49417.62,
+          "date": "2026-05-29",
+          "note": "",
+          "id": 3
+        },
+        {
+          "section": "cash",
+          "category": "ГСМ на работу механизмов",
+          "description": "Виїзд на обєкт",
+          "amount": 800.0,
+          "date": "2025-03-02",
+          "note": "",
+          "id": 4
+        },
+        {
+          "section": "cash",
+          "category": "Расходные материалы",
+          "description": "Друк проектів",
+          "amount": 500.0,
+          "date": "2025-03-03",
+          "note": "",
+          "id": 5
+        },
+        {
+          "section": "cash",
+          "category": "Ремонт инструмента",
+          "description": "Ремонт ПК",
+          "amount": 400.0,
+          "date": "2026-03-21",
+          "note": "",
+          "id": 6
+        },
+        {
+          "section": "cash",
+          "category": "Транспортные услуги",
+          "description": "Доставка картриджу",
+          "amount": 80.0,
+          "date": "2025-01-22",
+          "note": "",
+          "id": 7
+        },
+        {
+          "section": "cash",
+          "category": "Собственный транспорт",
+          "description": "ГСМ Віталій",
+          "amount": 1200.0,
+          "date": "2025-12-21",
+          "note": "",
+          "id": 8
+        },
+        {
+          "section": "cash",
+          "category": "Новый инструмент / основные средства",
+          "description": "мишка",
+          "amount": 400.0,
+          "date": "2026-02-03",
+          "note": "",
+          "id": 9
+        },
+        {
+          "section": "payroll",
+          "category": "Бригада 1",
+          "description": "Оплата ТАНЯ",
+          "amount": 10000.0,
+          "date": "2026-01-01",
+          "note": "",
+          "id": 10
+        },
+        {
+          "section": "payroll",
+          "category": "Бригада 2",
+          "description": "Оплата Ірина",
+          "amount": 15000.0,
+          "date": "2026-01-01",
+          "note": "",
+          "id": 11
+        },
+        {
+          "section": "payroll",
+          "category": "Прораб",
+          "description": "ГІП",
+          "amount": 20000.0,
+          "date": "2026-01-01",
+          "note": "",
+          "id": 12
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Новосілки ЗВК 1ч",
+      "entries": [
+        {
+          "section": "revenue",
+          "category": "",
+          "description": "Авим Констракшн (Аванс)",
+          "amount": 500000.0,
+          "date": "2026-06-05",
+          "note": "",
+          "id": 13
+        },
+        {
+          "section": "cashless",
+          "category": "",
+          "description": "Перший дім (ком)",
+          "amount": 139232.83,
+          "date": "2026-05-22",
+          "note": "",
+          "id": 14
+        },
+        {
+          "section": "cashless",
+          "category": "",
+          "description": "ЧБТК (ком)",
+          "amount": 354735.0,
+          "date": "2026-06-15",
+          "note": "",
+          "id": 15
+        },
+        {
+          "section": "cash",
+          "category": "ГСМ на работу механизмов",
+          "description": "Экскаватор",
+          "amount": 300.0,
+          "date": "2025-06-23",
+          "note": "",
+          "id": 16
+        },
+        {
+          "section": "cash",
+          "category": "Расходные материалы",
+          "description": "Шпаклівка",
+          "amount": 400.0,
+          "date": "2026-01-12",
+          "note": "",
+          "id": 17
+        },
+        {
+          "section": "cash",
+          "category": "Ремонт инструмента",
+          "description": "Ремонт болгарки",
+          "amount": 600.0,
+          "date": "2026-01-13",
+          "note": "",
+          "id": 18
+        },
+        {
+          "section": "cash",
+          "category": "Транспортные услуги",
+          "description": "Доставка",
+          "amount": 400.0,
+          "date": "2025-01-11",
+          "note": "",
+          "id": 19
+        },
+        {
+          "section": "cash",
+          "category": "Собственный транспорт",
+          "description": "ГСМ Саша",
+          "amount": 1000.0,
+          "date": "2025-01-12",
+          "note": "",
+          "id": 20
+        },
+        {
+          "section": "cash",
+          "category": "Новый инструмент / основные средства",
+          "description": "Гайковерт",
+          "amount": 3600.0,
+          "date": "2025-02-10",
+          "note": "",
+          "id": 21
+        },
+        {
+          "section": "payroll",
+          "category": "Бригада 1",
+          "description": "Аванс",
+          "amount": 30000.0,
+          "date": "2025-02-01",
+          "note": "",
+          "id": 22
+        },
+        {
+          "section": "payroll",
+          "category": "Бригада 2",
+          "description": "Розрахунок",
+          "amount": 6000.0,
+          "date": "2026-03-01",
+          "note": "",
+          "id": 23
+        },
+        {
+          "section": "payroll",
+          "category": "Прораб",
+          "description": "ЗП травень",
+          "amount": 20000.0,
+          "date": "2026-05-28",
+          "note": "",
+          "id": 24
+        }
+      ]
+    }
+  ],
+  "overheads": [
+    {
+      "group_type": "cashless",
+      "category": "Банк",
+      "description": "Аккорд банк ( обслуг рах)",
+      "amount": 400.0,
+      "date": "2026-05-28",
+      "id": 1
+    },
+    {
+      "group_type": "cashless",
+      "category": "Банк",
+      "description": "Аккорд банк ( комісія)",
+      "amount": 10.0,
+      "date": "2026-05-22",
+      "id": 2
+    },
+    {
+      "group_type": "cashless",
+      "category": "Банк",
+      "description": "Аккорд банк ( комісія)",
+      "amount": 20.0,
+      "date": "2026-06-05",
+      "id": 3
+    },
+    {
+      "group_type": "cashless",
+      "category": "Банк",
+      "description": "Аккорд банк ( комісія)",
+      "amount": 10.0,
+      "date": "2026-06-15",
+      "id": 4
+    },
+    {
+      "group_type": "cashless",
+      "category": "Банк",
+      "description": "РКО",
+      "amount": 100.0,
+      "date": "2026-05-22",
+      "id": 5
+    },
+    {
+      "group_type": "cashless",
+      "category": "Налоги",
+      "description": "Поповнення ПДВ",
+      "amount": 26500.0,
+      "date": "2026-06-04",
+      "id": 6
+    },
+    {
+      "group_type": "cashless",
+      "category": "Налоги",
+      "description": "Поповнення ПДВ",
+      "amount": 22400.0,
+      "date": "2026-06-15",
+      "id": 7
+    },
+    {
+      "group_type": "cashless",
+      "category": "Другое",
+      "description": "ЗП ФОП ФедосеєваГ.Б. (травень)",
+      "amount": 20000.0,
+      "date": "2026-06-05",
+      "id": 8
+    },
+    {
+      "group_type": "cashless",
+      "category": "Другое",
+      "description": "ЗП ФОП ФедосеєваГ.Б. (березень, квітень)",
+      "amount": 40000.0,
+      "date": "2026-05-22",
+      "id": 9
+    },
+    {
+      "group_type": "cash",
+      "category": "ГСМ и техобслуживание",
+      "description": "ремонт ТОйота",
+      "amount": 1400.0,
+      "date": "2026-05-12",
+      "id": 10
+    },
+    {
+      "group_type": "cash",
+      "category": "Другое",
+      "description": "Ремонт Принтер",
+      "amount": 600.0,
+      "date": "2025-09-23",
+      "id": 11
+    },
+    {
+      "group_type": "cash",
+      "category": "Жильё и аренда",
+      "description": "Проживання бригада 1 травень",
+      "amount": 6000.0,
+      "date": "2025-05-24",
+      "id": 12
+    }
+  ]
+}

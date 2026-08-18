@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="{{ current_lang }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taskflow</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+
+    {% if session.get("user_id") %}
+    <div class="app-layout">
+
+        <aside class="sidebar-left">
+            <div class="sidebar-brand">
+                <i class="fa-solid fa-bolt"></i>
+                <span>Taskflow</span>
+            </div>
+            <nav class="main-menu">
+                <a href="/" class="menu-item active">
+                    <i class="fa-solid fa-house"></i><span>{{ t('menu_home') }}</span>
+                </a>
+                <a href="/activity" class="menu-item">
+                    <i class="fa-solid fa-chart-line"></i><span>{{ t('menu_activity') }}</span>
+                </a>
+                <a href="/" class="menu-item">
+                    <i class="fa-solid fa-list-check"></i><span>{{ t('menu_tasks') }}</span>
+                </a>
+                <a href="/messages" class="menu-item">
+                    <i class="fa-solid fa-comment-dots"></i><span>{{ t('menu_messages') }}</span>
+                </a>
+                <a href="/communities" class="menu-item">
+                    <i class="fa-solid fa-users"></i><span>{{ t('menu_communities') }}</span>
+                </a>
+                <a href="/settings" class="menu-item">
+                    <i class="fa-solid fa-gear"></i><span>{{ t('menu_settings') }}</span>
+                </a>
+                <a href="/cabinet" class="menu-item">
+                    <i class="fa-solid fa-user"></i><span>{{ t('menu_cabinet') }}</span>
+                </a>
+                <a href="/plans" class="menu-item">
+                    <i class="fa-solid fa-gem"></i><span>{{ t('menu_plans') }}</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-section">
+                <div class="sidebar-section-title" onclick="toggleSection(this)">
+                    {{ t('sidebar_communities') }}
+                    <i class="fa-solid fa-chevron-down chevron"></i>
+                </div>
+                <div class="sidebar-section-body">
+                {% for c in communities|default([]) %}
+                <a href="/communities/{{ c.id }}" class="community-item">
+                    <span class="community-dot" style="background:{{ c.color }}"></span>
+                    {{ c.display_name }}
+                </a>
+                {% endfor %}
+                {% if not communities %}
+                <div class="sidebar-empty">{{ t('sidebar_no_communities') }}</div>
+                {% endif %}
+                </div>
+            </div>
+
+            <div class="sidebar-section">
+                <div class="sidebar-section-title" onclick="toggleSection(this)">
+                    {{ t('sidebar_users') }}
+                    <i class="fa-solid fa-chevron-down chevron"></i>
+                </div>
+                <div class="sidebar-section-body">
+                {% for u in all_users|default([]) %}
+                <div class="user-item">
+                    <div class="user-avatar-sm" style="background:{{ u.color }}">{{ u.username[0]|upper }}</div>
+                    <span>{{ u.username }}</span>
+                </div>
+                {% endfor %}
+                </div>
+            </div>
+        </aside>
+
+        <div class="main-area">
+            <div class="center-content">
+                <div class="center-top-row">
+                    <div class="center-header">
+                        <div class="center-title">{{ t('dashboard_title') }}</div>
+                        <div class="center-date" id="currentDate"></div>
+                    </div>
+                    <div class="search-wrapper search-center">
+                        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+                        <input type="text" class="search-input" placeholder="{{ t('search_placeholder') }}" id="globalSearch">
+                    </div>
+                </div>
+
+                <div class="center-banner">
+                    <a href="{{ url_for('plans') }}" class="banner-link">
+                        <img src="{{ url_for('static', filename='sample_' + current_lang + '.png') }}" alt="Sample" class="sample-img">
+                    </a>
+                </div>
+
+                <div class="todo-input-card glass">
+                    <form action="{{ url_for('add') }}" method="post">
+                        <div class="todo-input-wrapper">
+                            <input autocomplete="off" class="glass-input" name="task" placeholder="{{ t('tasks_add_placeholder') }}" type="text">
+                            <button class="btn-glass btn-glass-success btn-add" type="submit">
+                                <i class="fa-solid fa-plus"></i> {{ t('tasks_add_btn') }}
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="flash-alert flash-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                {% block main %}{% endblock %}
+            </div>
+        </div>
+
+        <aside class="sidebar-right">
+            <div class="sidebar-user-panel">
+                <div class="user-avatar" style="background:{{ current_user.color|default('#7c3aed') }}">{{ current_user.username[0]|upper if current_user.username else '?' }}</div>
+                <span class="user-name">{{ current_user.username|default('Guest') }}</span>
+                <div class="lang-switcher">
+                    {% for lang in supported_langs %}
+                    <a href="/lang/{{ lang }}" class="lang-btn {% if lang == current_lang %}active{% endif %}">
+                        {% if lang == 'uk' %}UA{% elif lang == 'ru' %}RU{% elif lang == 'en' %}EN{% endif %}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title"><i class="fa-solid fa-calendar-days"></i> {{ t('menu_tasks') }}</div>
+                <div class="calendar-widget" id="miniCalendar">
+                    <div class="cal-header">
+                        <button class="cal-nav" onclick="calNav(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                        <span class="cal-month" id="calMonth"></span>
+                        <button class="cal-nav" onclick="calNav(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                    <div class="cal-days">
+                        <span id="calDay0"></span><span id="calDay1"></span><span id="calDay2"></span>
+                        <span id="calDay3"></span><span id="calDay4"></span><span id="calDay5"></span><span id="calDay6"></span>
+                    </div>
+                    <div class="cal-grid" id="calGrid"></div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title"><i class="fa-solid fa-bolt"></i> {{ t('activity_today') }}</div>
+                <div class="activity-list">
+                    {% for a in activities|default([]) %}
+                    <div class="activity-item">
+                        <div class="activity-icon" style="background:{{ a.color }}">
+                            <i class="fa-solid {{ a.icon }}"></i>
+                        </div>
+                        <div class="activity-info">
+                            <div class="activity-text">{{ a.text }}</div>
+                            <div class="activity-time">{{ a.time }}</div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                    {% if not activities %}
+                    <div class="sidebar-empty">{{ t('activity_empty') }}</div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title"><i class="fa-solid fa-users"></i> {{ t('sidebar_community_status') }}</div>
+                <div class="community-status-list">
+                    {% for c in communities|default([]) %}
+                    <div class="community-status-item">
+                        <span class="community-dot" style="background:{{ c.color }}"></span>
+                        <span class="community-status-name">{{ c.display_name }}</span>
+                        <span class="community-status-badge online"></span>
+                    </div>
+                    {% endfor %}
+                    {% if not communities %}
+                    <div class="sidebar-empty">{{ t('sidebar_no_communities') }}</div>
+                    {% endif %}
+                </div>
+            </div>
+        </aside>
+    </div>
+    {% else %}
+    <div class="auth-layout">
+        {% block auth %}{% endblock %}
+    </div>
+    {% endif %}
+
+    <script>
+        function toggleSidebar() {
+            document.querySelector('.sidebar-left').classList.toggle('open');
+        }
+
+        function toggleSection(el) {
+            el.closest('.sidebar-section').classList.toggle('collapsed');
+        }
+
+        const taskDates = {{ task_dates|default([], true)|tojson }};
+        const today = new Date();
+        let calYear = today.getFullYear();
+        let calMonth = today.getMonth();
+
+        const lang = '{{ current_lang }}';
+        const monthNames = {
+            uk: ['Січень','Лютий','Березень','Квітень','Травень','Червень','Липень','Серпень','Вересень','Жовтень','Листопад','Грудень'],
+            ru: ['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
+            en: ['January','February','March','April','May','June','July','August','September','October','November','December']
+        };
+        const dayNames = {
+            uk: ['Пн','Вт','Ср','Чт','Пт','Сб','Нд'],
+            ru: ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],
+            en: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
+        };
+
+        function renderCalendar() {
+            const mn = monthNames[lang] || monthNames.uk;
+            document.getElementById('calMonth').textContent = mn[calMonth] + ' ' + calYear;
+            const dn = dayNames[lang] || dayNames.uk;
+            for (let i = 0; i < 7; i++) {
+                document.getElementById('calDay' + i).textContent = dn[i];
+            }
+            const grid = document.getElementById('calGrid');
+            grid.innerHTML = '';
+            const first = new Date(calYear, calMonth, 1);
+            const last = new Date(calYear, calMonth + 1, 0);
+            const startDay = (first.getDay() + 6) % 7;
+            for (let i = 0; i < startDay; i++) {
+                const blank = document.createElement('div');
+                blank.className = 'cal-day empty';
+                grid.appendChild(blank);
+            }
+            for (let d = 1; d <= last.getDate(); d++) {
+                const el = document.createElement('div');
+                el.className = 'cal-day';
+                const dateStr = calYear + '-' + String(calMonth+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+                if (d === today.getDate() && calMonth === today.getMonth() && calYear === today.getFullYear()) {
+                    el.classList.add('today');
+                }
+                if (taskDates.includes(dateStr)) {
+                    el.classList.add('has-task');
+                }
+                el.textContent = d;
+                grid.appendChild(el);
+            }
+        }
+
+        function calNav(dir) {
+            calMonth += dir;
+            if (calMonth > 11) { calMonth = 0; calYear++; }
+            if (calMonth < 0) { calMonth = 11; calYear--; }
+            renderCalendar();
+        }
+
+        if (document.getElementById('calGrid')) {
+            renderCalendar();
+        }
+
+        const dateEl = document.getElementById('currentDate');
+        if (dateEl) {
+            const now = new Date();
+            const dateOpts = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const locale = lang === 'uk' ? 'uk-UA' : lang === 'ru' ? 'ru-RU' : 'en-US';
+            dateEl.textContent = now.toLocaleDateString(locale, dateOpts);
+        }
+    </script>
+</body>
+</html>

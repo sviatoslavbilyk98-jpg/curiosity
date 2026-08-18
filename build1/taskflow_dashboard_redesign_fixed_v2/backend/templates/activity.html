@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% block main %}
+<div class="page-container">
+    <h1 class="page-title">{{ t('activity_title') }}</h1>
+    <div class="panel">
+        <div class="panel-title"><i class="fa-solid fa-clock-rotate-left"></i> {{ t('activity_history') }}</div>
+        <div class="activity-list-full">
+            {% for a in activities|default([]) %}
+            <div class="activity-item-full">
+                <div class="activity-icon" style="background:{{ a.color }}">
+                    <i class="fa-solid {{ a.icon }}"></i>
+                </div>
+                <div class="activity-info">
+                    <div class="activity-text">{{ a.text }}</div>
+                    <div class="activity-time">{{ a.time }}</div>
+                </div>
+            </div>
+            {% endfor %}
+            {% if not activities %}
+            <div class="empty-state">
+                <i class="fa-solid fa-chart-line empty-state-icon"></i>
+                <h3>{{ t('activity_empty') }}</h3>
+                <p>{{ t('activity_empty_hint') }}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

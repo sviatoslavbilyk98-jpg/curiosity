@@ -1,0 +1,35 @@
+СТРОЙФІНАНС — ВСТАНОВЛЕННЯ ПЕРЕПИСАНОЇ ВЕРСІЇ
+
+Файли:
+1) Code_rebuilt.gs  -> замінити вміст Code.gs
+2) Index_rebuilt.html -> замінити вміст Index.html
+
+ВАЖЛИВО: перед заміною зробіть копію поточного Apps Script проекту або збережіть старі файли.
+
+ПОРЯДОК:
+1. Відкрийте потрібну Google Таблицю.
+2. Розширення -> Apps Script.
+3. Замініть Code.gs на Code_rebuilt.gs.
+4. Замініть Index.html на Index_rebuilt.html.
+5. Збережіть проект.
+6. Запустіть setupSheets().
+   Очікування: функція завершується швидко і повертає ok:true.
+7. Запустіть testSpreadsheetConnection().
+8. Запустіть testLogin().
+9. Запустіть testDispatchState().
+10. Якщо тести успішні: Deploy -> Manage deployments -> Edit -> New version -> Deploy.
+11. Відкрийте URL /exec.
+
+НЕ запускайте dispatch() напряму кнопкою Run: ця функція очікує method, url, body, userCode від браузера.
+
+ЯК ЧИТАТИ ЛОГИ:
+- Кожний серверний запит має requestId у форматі [xxxxxxxxxx].
+- START = початок операції.
+- ROUTE = HTTP-подібний маршрут фронтенду.
+- State built = скільки об'єктів прочитано та за скільки мс.
+- WRITE LOCK acquired = блокування запису отримане.
+- AUDIT = бізнес-зміна записана у Журнал.
+- DONE = операція завершилась.
+- FAIL = помилка; поруч буде requestId, повідомлення і stack.
+
+Якщо web-app показує помилку, скопіюйте її разом із requestId. Це дозволяє знайти той самий запит в Executions/Logs.

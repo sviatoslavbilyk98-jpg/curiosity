@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+
+{% block auth %}
+<div class="auth-center">
+    <div class="auth-card glass">
+        <div class="auth-brand">
+            <i class="fa-solid fa-bolt"></i>
+            <span>Taskflow</span>
+        </div>
+        <h2>{{ t('auth_welcome_back') }}</h2>
+        <p class="subtitle">{{ t('auth_signin_subtitle') }}</p>
+
+        <div class="lang-switcher" style="justify-content:center;margin-bottom:20px;">
+            {% for lang in supported_langs %}
+            <a href="/lang/{{ lang }}" class="lang-btn {% if lang == current_lang %}active{% endif %}">
+                {% if lang == 'uk' %}UA{% elif lang == 'ru' %}RU{% elif lang == 'en' %}EN{% endif %}
+            </a>
+            {% endfor %}
+        </div>
+
+        <form action="{{ url_for('login') }}" method="post">
+            <div class="input-group">
+                <label>{{ t('auth_username') }}</label>
+                <input autocomplete="off" autofocus class="glass-input" name="username" placeholder="{{ t('auth_username_placeholder') }}" type="text">
+            </div>
+            <div class="input-group">
+                <label>{{ t('auth_password') }}</label>
+                <input class="glass-input" name="password" placeholder="{{ t('auth_password_placeholder') }}" type="password">
+            </div>
+            <button class="btn-glass btn-glass-primary" type="submit">{{ t('auth_signin_btn') }}</button>
+        </form>
+
+        <p class="auth-link">
+            {{ t('auth_no_account') }} <a href="{{ url_for('register') }}">{{ t('auth_create_one') }}</a>
+        </p>
+    </div>
+</div>
+{% endblock %}

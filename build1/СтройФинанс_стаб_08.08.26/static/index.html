@@ -1,0 +1,684 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>СтройФинанс</title>
+  <style>
+    :root{
+      color-scheme:light;
+      --bg:#f5f6f8;--panel:#fff;--panel2:#f8fafc;--text:#808080;--muted:#808080;--line:#e7eaf0;
+      --primary:#475569;--primary2:#334155;--primary-soft:#f1f5f9;
+      --cyan:#0284c7;--sky:#0ea5e9;--pink:#db2777;
+      --num:#ffffff;--neg:#fc4c13;
+      --green:#ffffff;--red:#fc4c13;--amber:#ffffff;
+      --shadow:0 1px 2px rgba(15,23,42,.04),0 8px 24px rgba(15,23,42,.06);
+      --radius:14px;
+      --th-bg:#f8fafc;--th-text:#808080;--td-border:#eef1f5;--row-hover:#f7f9fc;
+      --field-bg:#fff;--field-border:#d5dae3;--focus-border:#64748b;--focus-ring:rgba(100,116,139,.16);
+      --mini-bg:#f8fafc;--mini-border:#edf0f5;
+      --btn-bg:#fff;--hover-shadow:0 8px 20px rgba(15,23,42,.1);
+      --danger-bg:#fef2f2;--danger-border:#fecaca;
+      --modal-bg:#fff;--close-bg:#f1f5f9;--label:#808080;--backdrop:rgba(2,6,23,.5);
+      --topbar-bg:rgba(255,255,255,.82);
+      --formula-bg:linear-gradient(145deg,#f1f5f9,#fff);--formula-border:#e2e8f0;
+      --formula-inner:#fff;--formula-inner-border:#e2e8f0;--formula-text:#808080;
+      --note-bg:#fffbeb;--note-border:#fde68a;--note-text:#808080;
+      --pill-bg:#eef1f6;--pill-text:#808080;
+      --pill-cash-bg:#fff7ed;--pill-cash-text:#fc4c13;
+      --pill-green-bg:#ecfdf3;--pill-green-text:#ffffff;
+      --totals-bg:#ecfdf3;
+      --loading-bg:rgba(245,246,248,.7);
+      --spinner-track:#e2e8f0;--spinner-top:#475569;
+      --scroll:#cbd5e1;
+    }
+    html[data-theme="dark"]{
+      color-scheme:dark;
+      --bg:#0b1120;--panel:#111a2c;--panel2:#182236;--text:#808080;--muted:#808080;--line:#24324a;
+      --primary:#94a3b8;--primary2:#cbd5e1;--primary-soft:#334155;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 10px 30px rgba(0,0,0,.35);
+      --th-bg:#182236;--th-text:#808080;--td-border:#223047;--row-hover:#131e31;
+      --field-bg:#141f33;--field-border:#31405c;--focus-border:#94a3b8;--focus-ring:rgba(148,163,184,.3);
+      --mini-bg:#141f33;--mini-border:#223047;
+      --btn-bg:#182236;--hover-shadow:0 8px 20px rgba(0,0,0,.4);
+      --danger-bg:#2a1216;--danger-border:#7f1d1d;
+      --modal-bg:#111a2c;--close-bg:#24324a;--label:#808080;--backdrop:rgba(2,6,23,.7);
+      --topbar-bg:rgba(11,17,32,.82);
+      --formula-bg:linear-gradient(145deg,#1c2440,#111a2c);--formula-border:#334155;
+      --formula-inner:#0e1630;--formula-inner-border:#334155;--formula-text:#808080;
+      --note-bg:#3b2e0f;--note-border:#92600a;--note-text:#808080;
+      --pill-bg:#263042;--pill-text:#808080;
+      --pill-cash-bg:#431407;--pill-cash-text:#fc4c13;
+      --pill-green-bg:#064e3b;--pill-green-text:#ffffff;
+      --totals-bg:#0f3d2e;
+      --loading-bg:rgba(2,6,23,.7);
+      --spinner-track:#334155;--spinner-top:#94a3b8;
+      --scroll:#334155;
+    }
+    *{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:14px/1.45 Inter,Segoe UI,Arial,sans-serif;transition:background .25s,color .25s}
+    button,input,select,textarea{font:inherit} button{cursor:pointer}
+    .app{display:grid;grid-template-columns:250px 1fr;min-height:100vh;background:var(--bg)}
+    aside{position:sticky;top:0;height:100vh;background:linear-gradient(180deg,#0f172a,#0b1120);color:#808080;padding:22px 16px;display:flex;flex-direction:column;gap:20px;border-right:1px solid rgba(148,163,184,.08)}
+    .brand{display:flex;align-items:center;gap:11px;padding:2px 8px 6px}    .brand-mark{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#94a3b8,#475569);display:grid;place-items:center;font-size:20px;box-shadow:0 8px 20px rgba(100,116,139,.35);flex:none}
+    .brand strong{font-size:17px;letter-spacing:-.02em;color:#808080}.brand small{display:block;color:#808080;margin-top:2px;font-size:12px}
+    nav{display:grid;gap:6px}.nav-btn{border:0;background:transparent;color:#808080;padding:11px 13px;border-radius:10px;text-align:left;display:flex;align-items:center;gap:11px;font-weight:650;transition:background .15s,color .15s}.nav-btn>span:first-child{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:none;font-size:14px;background:rgba(148,163,184,.16);transition:background .15s}.nav-btn:hover{background:rgba(255,255,255,.06);color:#808080}.nav-btn:hover>span:first-child{background:rgba(255,255,255,.14)}.nav-btn.active{background:var(--primary);color:#fff;box-shadow:0 6px 16px rgba(100,116,139,.4)}.nav-btn.active>span:first-child{background:rgba(255,255,255,.22)}
+    .sidebar-actions{margin-top:auto;display:grid;gap:6px}.side-btn{border:0;background:transparent;color:#808080;border-radius:10px;padding:11px 13px;text-align:left;font-weight:650;display:flex;align-items:center;gap:11px;transition:background .15s,color .15s}.side-btn .icon{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;flex:none;background:rgba(148,163,184,.16);font-size:13px;transition:background .15s}.side-btn:hover{background:rgba(255,255,255,.06);color:#808080}.side-btn:hover .icon{background:rgba(255,255,255,.14)}
+    main{min-width:0;padding:24px 28px 45px}
+    .topbar{position:sticky;top:0;z-index:20;display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin:-24px -28px 20px;padding:16px 28px;background:var(--topbar-bg);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}.topbar .selector-row{margin-bottom:0}
+    .title h1{margin:0;font-size:26px;letter-spacing:-.03em}.title p{margin:4px 0 0;color:var(--muted)}
+    .menu-btn{display:none;border:1px solid var(--line);background:var(--btn-bg);color:var(--text);width:40px;height:40px;flex:none;border-radius:10px;align-items:center;justify-content:center;font-size:18px}
+    .top-actions{display:flex;gap:10px;flex-wrap:wrap}.lang-switch{display:flex;gap:6px;align-items:center}.lang-btn{width:34px;height:34px;border-radius:50%;border:1px solid var(--field-border);background:var(--field-bg);color:var(--muted);font-weight:800;font-size:12px;cursor:pointer;transition:border-color .15s,color .15s,background .15s,box-shadow .15s;line-height:1}.lang-btn:hover{border-color:var(--primary-soft);color:var(--text)}.lang-btn.active{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 4px 10px rgba(100,116,139,.25)}.lang-one{min-width:44px;width:auto;padding:0 8px;border-radius:20px}.btn{border:1px solid var(--line);background:var(--btn-bg);color:var(--text);border-radius:10px;padding:10px 14px;font-weight:700;display:inline-flex;align-items:center;gap:8px;justify-content:center;transition:transform .12s,box-shadow .12s,border-color .12s}.btn:hover{transform:translateY(-1px);box-shadow:var(--hover-shadow);border-color:var(--primary-soft)}.btn.primary{background:var(--primary);border-color:var(--primary);color:#fff;box-shadow:0 4px 12px rgba(100,116,139,.25)}.btn.primary:hover{background:var(--primary2);box-shadow:0 6px 16px rgba(100,116,139,.35)}.btn.danger{color:var(--red);border-color:var(--danger-border);background:var(--danger-bg)}.btn.ghost{background:transparent}.btn.small{padding:7px 10px;border-radius:8px;font-size:13px}.btn.icon{width:34px;height:34px;padding:0}
+    .page{display:none}.page.active{display:block}.grid{display:grid;gap:16px}.kpi-grid{grid-template-columns:repeat(4,minmax(0,1fr));margin-bottom:18px;zoom:.81}.card{background:transparent;border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .kpi{padding:18px 19px;position:relative;overflow:hidden;background:transparent;transition:transform .15s,box-shadow .15s}.kpi:hover{transform:translateY(-2px);box-shadow:var(--hover-shadow)}.kpi .label{color:var(--muted);font-weight:650;margin-bottom:7px}.kpi .value{font-size:24px;font-weight:800;letter-spacing:-.03em;color:var(--num)}.kpi .hint{margin-top:5px;color:var(--muted);font-size:12px}.kpi.good .value{color:var(--green)}.kpi.bad .value{color:var(--red)}.kpi.amber .value{color:var(--amber)}.kpi-grid.mono .kpi .value{color:var(--num)}.kpi-grid.mono .kpi.good .value{color:var(--green)}.kpi-grid.mono .kpi.bad .value{color:var(--red)}.kpi-grid.mono .kpi.amber .value{color:var(--amber)}.kpi-grid.proj .kpi{padding:13px 16px}.kpi-grid.proj .kpi-conversion{display:flex;flex-direction:column;justify-content:center}
+    .section-card{padding:0;overflow:hidden}.section-head{display:flex;justify-content:space-between;gap:12px;align-items:center;padding:16px 18px;border-bottom:1px solid var(--line);background:transparent}.section-head h2,.section-head h3{margin:0;font-size:16px}.section-head p{margin:3px 0 0;color:var(--muted);font-size:13px}.section-body{padding:18px}
+    .project-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.project-card{padding:18px}.project-card-top{display:flex;justify-content:space-between;gap:12px}.project-card h3{margin:0 0 4px;font-size:17px}.project-card .sub{color:var(--muted)}.mini-metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}.mini{padding:11px 12px;border-radius:12px;background:var(--mini-bg);border:1px solid var(--mini-border)}.mini span{display:block;color:var(--muted);font-size:12px}.mini b{display:block;margin-top:4px;font-size:15px;color:var(--num)}
+    .selector-row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:16px}.selector-row select{min-width:310px}.field,.selector-row select{border:1px solid var(--field-border);background:var(--field-bg);border-radius:10px;padding:10px 11px;color:var(--text);outline:none;transition:border-color .15s,box-shadow .15s}.field:focus,.selector-row select:focus{border-color:var(--focus-border);box-shadow:0 0 0 3px var(--focus-ring)}.field.wide{width:100%}
+    .table-wrap{overflow:auto}.data-table{width:100%;border-collapse:separate;border-spacing:0;min-width:760px}.data-table th{background:var(--th-bg);color:var(--th-text);font-size:11px;text-transform:uppercase;letter-spacing:.05em;text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:1;white-space:nowrap}.data-table th.srt{cursor:pointer;user-select:none}.data-table th.srt:hover{color:var(--primary)}.data-table td{padding:11px 12px;border-bottom:1px solid var(--td-border);vertical-align:middle}.data-table tr:last-child td{border-bottom:0}.data-table tbody tr:hover{background:var(--row-hover)}.totals-row{background:var(--totals-bg);font-weight:800}.contract-row td{background:var(--th-bg);font-weight:700}.contract-row td:first-child{color:var(--text)}.act-row td:first-child{width:44px}.num{text-align:right!important;font-variant-numeric:tabular-nums;white-space:nowrap;color:var(--num)}.neg{color:var(--red)}.muted{color:var(--muted)}.profit-positive{color:var(--green);font-weight:800}.profit-negative{color:var(--red);font-weight:800}.pill{display:inline-flex;align-items:center;padding:4px 9px;border-radius:999px;background:var(--pill-bg);color:var(--pill-text);font-size:12px;font-weight:750}.pill.percent{width:56px;height:56px;border-radius:50%;padding:0;justify-content:center;text-align:center;line-height:1}.pill.cash{background:var(--pill-cash-bg);color:var(--pill-cash-text)}.pill.green{background:var(--pill-green-bg);color:var(--pill-green-text)}
+    .section-stack{display:grid;gap:16px}.empty{padding:28px;text-align:center;color:var(--muted)}.empty strong{display:block;color:var(--text);font-size:16px;margin-bottom:4px}
+    .project-toolbar{display:flex;justify-content:space-between;gap:15px;align-items:flex-start}.project-title{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.project-title h2{margin:0;font-size:22px}
+    .split{display:grid;grid-template-columns:1.25fr .75fr;gap:16px}.formula-box{padding:18px;background:var(--formula-bg);border:1px solid var(--formula-border);border-radius:var(--radius)}.formula-box h3{margin:0 0 10px}.formula{font-family:Consolas,monospace;background:var(--formula-inner);border:1px solid var(--formula-inner-border);padding:10px;border-radius:9px;overflow:auto;color:var(--formula-text)}
+    .modal-backdrop{position:fixed;inset:0;background:var(--backdrop);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}.modal-backdrop.open{display:flex}.modal{width:min(620px,100%);max-height:92vh;overflow:auto;background:var(--modal-bg);border:1px solid var(--line);border-radius:16px;box-shadow:0 30px 100px rgba(2,6,23,.35)}.modal-head{display:flex;justify-content:space-between;align-items:center;padding:18px 20px;border-bottom:1px solid var(--line)}.modal-head h2{margin:0;font-size:19px}.modal-body{padding:20px}.modal-foot{padding:14px 20px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:9px}.close{border:0;background:var(--close-bg);width:34px;height:34px;border-radius:10px;font-size:20px;color:var(--muted);transition:background .15s,color .15s}.close:hover{background:var(--line)}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.form-group{display:grid;gap:6px}.form-group.full{grid-column:1/-1}.form-group label{font-weight:700;color:var(--label)}.form-group small{color:var(--muted)}textarea.field{min-height:76px;resize:vertical}
+    .toast{position:fixed;right:24px;bottom:24px;background:#111a2c;border:1px solid rgba(148,163,184,.25);color:#fff;padding:13px 16px;border-radius:12px;box-shadow:0 12px 40px rgba(2,6,23,.35);opacity:0;transform:translateY(10px);pointer-events:none;transition:.2s;z-index:80;max-width:360px}.toast.show{opacity:1;transform:translateY(0)}.toast.error{background:#b42318;border-color:#b42318}
+    .loading{position:fixed;inset:0;background:var(--loading-bg);backdrop-filter:blur(2px);display:none;place-items:center;z-index:70}.loading.show{display:grid}.spinner{width:42px;height:42px;border:4px solid var(--spinner-track);border-top-color:var(--spinner-top);border-radius:50%;animation:spin .8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}
+    .settings-row{display:flex;align-items:end;gap:12px;flex-wrap:wrap}.settings-row .form-group{min-width:220px}.note{padding:12px 14px;background:var(--note-bg);border:1px solid var(--note-border);border-radius:11px;color:var(--note-text)}
+    ::-webkit-scrollbar{width:10px;height:10px}::-webkit-scrollbar-thumb{background:var(--scroll);border-radius:8px;border:2px solid transparent;background-clip:content-box}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-corner{background:transparent}
+    @media(max-width:1050px){.kpi-grid{grid-template-columns:repeat(2,1fr)}.project-grid,.split{grid-template-columns:1fr}}
+    @media(max-width:900px){
+      .menu-btn{display:inline-flex}
+      .app{display:block}
+      aside{position:fixed;left:0;top:0;bottom:0;width:262px;height:100dvh;z-index:70;transform:translateX(-105%);transition:transform .25s ease;overflow:auto;padding:20px 14px;box-shadow:none}
+      aside.open{transform:none;box-shadow:0 0 60px rgba(2,6,23,.55)}
+      .sidebar-overlay{position:fixed;inset:0;background:rgba(2,6,23,.55);z-index:65;opacity:0;visibility:hidden;pointer-events:none;transition:opacity .25s,visibility .25s}
+      .sidebar-overlay.open{opacity:1;visibility:visible;pointer-events:auto}
+      main{min-width:0;padding:16px 14px 44px}
+      .topbar{position:sticky;top:0;margin:-16px -14px 14px;padding:10px 14px;gap:10px}
+      .title h1{font-size:19px}.title p{font-size:12px;margin-top:2px}
+      .topbar .selector-row{width:100%;min-width:0}
+      .selector-row select{min-width:0;width:100%}
+      .project-grid,.split{grid-template-columns:1fr}
+      .form-grid{grid-template-columns:1fr}
+      .form-group.full{grid-column:auto}
+      .section-head{flex-wrap:wrap;gap:10px}
+      .table-wrap{-webkit-overflow-scrolling:touch}
+      .kpi-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .kpi{padding:14px 14px}
+      .kpi .value{font-size:20px}
+      .modal-body,.modal-head{padding:15px 16px}
+      .modal-foot{padding:12px 16px}
+    }
+    @media(max-width:480px){
+      .kpi-grid{grid-template-columns:1fr}
+      .title h1{font-size:17px}
+      .top-actions{width:100%}
+      .top-actions .btn{flex:1}
+      .modal-backdrop{align-items:flex-end;padding:0}
+      .modal{width:100%;max-height:92dvh;border-radius:16px 16px 0 0}
+      .modal-foot .btn{flex:1}
+      .data-table{min-width:640px}
+    }
+  </style>
+</head>
+<body>
+<script>try{document.documentElement.setAttribute('data-theme',localStorage.getItem('sf_theme')==='dark'?'dark':'light')}catch(e){}</script>
+<div class="app">
+  <aside>
+    <div class="brand"><div class="brand-mark">🏗️</div><div><strong data-i18n="app.title">СтройФинанс</strong><small data-i18n="brand.tagline">Учёт малого предприятия</small></div></div>
+    <nav>
+      <button class="nav-btn active" data-page="dashboard"><span>◫</span><span data-i18n="nav.dashboard">Обзор</span></button>
+      <button class="nav-btn" data-page="projects"><span>▦</span><span data-i18n="nav.projects">Стройки</span></button>
+      <button class="nav-btn" data-page="overheads"><span>₴</span><span data-i18n="nav.overheads">Накладні</span></button>
+      <button class="nav-btn" data-page="results"><span>∑</span><span data-i18n="nav.results">Результат</span></button>
+    </nav>
+    <div class="sidebar-actions">
+      <button class="side-btn" id="themeBtn" onclick="toggleTheme()"><span class="icon">🌙</span><span class="label">Тёмная тема</span></button>
+      <button class="side-btn" onclick="downloadExcel()"><span class="icon">⬇</span><span class="label" data-i18n="side.excel">Экспортировать Excel</span></button>
+      <button class="side-btn" onclick="downloadBackup()"><span class="icon">💾</span><span class="label" data-i18n="side.backup">Резервная копия</span></button>
+      <button class="side-btn" onclick="openSettings()"><span class="icon">⚙</span><span class="label" data-i18n="side.settings">Настройки</span></button>
+    </div>
+  </aside>
+
+  <main>
+    <div class="topbar">
+      <button class="menu-btn" id="menuBtn" onclick="toggleSidebar(true)" aria-label="Menu">☰</button>
+      <button class="btn" id="topExcel" onclick="downloadExcelPage()" style="display:none"><span data-i18n="result.downloadExcel">EXEL</span></button>
+      <div class="title" id="topTitle"><h1 id="pageTitle" data-i18n="page.dashboard.title">Обзор предприятия</h1><p id="pageSubtitle" data-i18n="page.dashboard.subtitle">Финансовая картина по всем строительным объектам</p></div>
+      <div class="selector-row" id="topProjectTools" style="display:none"></div>
+      <div class="top-actions">
+        <div class="lang-switch"><button class="lang-btn lang-one" onclick="cycleLang()" aria-label="Language">RU</button></div>
+      </div>
+    </div>
+
+    <section id="dashboard" class="page active"></section>
+    <section id="projects" class="page"></section>
+    <section id="overheads" class="page"></section>
+    <section id="results" class="page"></section>
+    <section id="contracts" class="page"></section>
+    <section id="execdoc" class="page"></section>
+  </main>
+</div>
+
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar(false)"></div>
+
+<div class="modal-backdrop" id="projectModal">
+  <div class="modal">
+    <div class="modal-head"><h2 id="projectModalTitle" data-i18n="modal.projectTitleNew">Новая стройка</h2><button class="close" onclick="closeModal('projectModal')">×</button></div>
+    <form id="projectForm">
+      <div class="modal-body">
+        <div class="form-group"><label data-i18n="modal.projectNameLabel">Название стройки</label><input class="field wide" id="projectName" maxlength="120" required placeholder="Например: ЖК Новосёлки, корпус 2" data-i18n-placeholder="modal.projectNamePlaceholder"><small data-i18n="modal.projectNameHint">В Excel будет создан отдельный лист. Листы «Накладні» и «Результат» не дублируются.</small></div>
+      </div>
+      <div class="modal-foot"><button type="button" class="btn" onclick="closeModal('projectModal')" data-i18n="modal.cancel">Отмена</button><button class="btn primary" type="submit" data-i18n="modal.save">Сохранить</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="entryModal">
+  <div class="modal">
+    <div class="modal-head"><h2 id="entryModalTitle" data-i18n="modal.entryTitleNew">Добавить запись</h2><button class="close" onclick="closeModal('entryModal')">×</button></div>
+    <form id="entryForm">
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group full"><label data-i18n="modal.sectionLabel">Раздел</label><select class="field wide" id="entrySection" required></select></div>
+          <div class="form-group full" id="entryCategoryGroup"><label data-i18n="modal.categoryLabel">Категория</label><select class="field wide" id="entryCategory"></select></div>
+          <div class="form-group full"><label data-i18n="modal.descriptionLabel">Описание / контрагент</label><input class="field wide" id="entryDescription" maxlength="250" placeholder="Наименование платежа или получателя" data-i18n-placeholder="modal.descriptionPlaceholder"></div>
+          <div class="form-group"><label data-i18n="modal.dateLabel">Дата</label><input class="field wide" id="entryDate" type="date"></div>
+          <div class="form-group"><label data-i18n="modal.amountLabel">Сумма, ₴</label><input class="field wide" id="entryAmount" type="number" min="0" step="0.01" required></div>
+          <div class="form-group full"><label data-i18n="modal.noteLabel">Примечание</label><textarea class="field wide" id="entryNote" maxlength="500" placeholder="Необязательно" data-i18n-placeholder="modal.notePlaceholder"></textarea></div>
+        </div>
+      </div>
+      <div class="modal-foot"><button type="button" class="btn" onclick="closeModal('entryModal')" data-i18n="modal.cancel">Отмена</button><button class="btn primary" type="submit" data-i18n="modal.save">Сохранить</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="overheadModal">
+  <div class="modal">
+    <div class="modal-head"><h2 id="overheadModalTitle" data-i18n="modal.overheadTitleNew">Добавить накладные расходы</h2><button class="close" onclick="closeModal('overheadModal')">×</button></div>
+    <form id="overheadForm">
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group"><label data-i18n="modal.paymentTypeLabel">Вид оплаты</label><select class="field wide" id="overheadGroup"><option value="cashless" data-i18n="type.cashless">Безналичные</option><option value="cash" data-i18n="type.cash">Наличные</option></select></div>
+          <div class="form-group"><label data-i18n="modal.categoryLabel">Категория</label><select class="field wide" id="overheadCategory"><option value="Банк" data-i18n="ocat.bank">Банк</option><option value="Налоги" data-i18n="ocat.taxes">Налоги</option><option value="Зарплата администрации" data-i18n="ocat.adminSalary">Зарплата администрации</option><option value="ГСМ и техобслуживание" data-i18n="ocat.fuel">ГСМ и техобслуживание</option><option value="Жильё и аренда" data-i18n="ocat.rent">Жильё и аренда</option><option value="Другое" data-i18n="ocat.other">Другое</option></select></div>
+          <div class="form-group full"><label data-i18n="modal.overheadDescLabel">Описание</label><input class="field wide" id="overheadDescription" maxlength="250" required></div>
+          <div class="form-group"><label data-i18n="modal.dateLabel">Дата</label><input class="field wide" id="overheadDate" type="date"></div>
+          <div class="form-group"><label data-i18n="modal.amountLabel">Сумма, ₴</label><input class="field wide" id="overheadAmount" type="number" min="0" step="0.01" required></div>
+        </div>
+      </div>
+      <div class="modal-foot"><button type="button" class="btn" onclick="closeModal('overheadModal')" data-i18n="modal.cancel">Отмена</button><button class="btn primary" type="submit" data-i18n="modal.save">Сохранить</button></div>
+    </form>
+  </div>
+</div>
+
+<input type="file" id="execDocFileInput" style="display:none" accept="*/*">
+
+<div class="modal-backdrop" id="contractModal">
+  <div class="modal">
+    <div class="modal-head"><h2 id="contractModalTitle"></h2><button class="close" onclick="closeModal('contractModal')">×</button></div>
+    <form id="contractForm">
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group full"><label data-i18n="contract.nameLabel">Название договора</label><input class="field wide" id="contractName" maxlength="250" required></div>
+          <div class="form-group"><label data-i18n="contract.dateLabel">Дата подписания</label><input class="field wide" id="contractDate" type="date"></div>
+          <div class="form-group"><label data-i18n="contract.amountLabel">Сумма, ₴</label><input class="field wide" id="contractAmount" type="number" min="0" step="0.01" required></div>
+        </div>
+      </div>
+      <div class="modal-foot"><button type="button" class="btn" onclick="closeModal('contractModal')" data-i18n="modal.cancel">Отмена</button><button class="btn primary" type="submit" data-i18n="modal.save">Сохранить</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="actModal">
+  <div class="modal">
+    <div class="modal-head"><h2 id="actModalTitle"></h2><button class="close" onclick="closeModal('actModal')">×</button></div>
+    <form id="actForm">
+      <div class="modal-body">
+        <div class="form-grid">
+          <div class="form-group full"><label data-i18n="contract.contract">Договір</label><select class="field wide" id="actContract"></select></div>
+          <div class="form-group full"><label data-i18n="contract.actNumberLabel">Номер акта</label><input class="field wide" id="actNumber" maxlength="50" required></div>
+          <div class="form-group"><label data-i18n="contract.dateLabel">Дата подписания</label><input class="field wide" id="actDate" type="date"></div>
+          <div class="form-group"><label data-i18n="contract.amountLabel">Сумма, ₴</label><input class="field wide" id="actAmount" type="number" min="0" step="0.01" required></div>
+        </div>
+      </div>
+      <div class="modal-foot"><button type="button" class="btn" onclick="closeModal('actModal')" data-i18n="modal.cancel">Отмена</button><button class="btn primary" type="submit" data-i18n="modal.save">Сохранить</button></div>
+    </form>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="settingsModal">
+  <div class="modal">
+    <div class="modal-head"><h2 data-i18n="settings.title">Настройки и данные</h2><button class="close" onclick="closeModal('settingsModal')">×</button></div>
+    <div class="modal-body section-stack">
+      <div>
+        <h3 data-i18n="settings.importTitle">Импорт данных из Excel</h3>
+        <div class="note" data-i18n="settings.importNote">Поддерживается исходный шаблон с отдельными листами строек, единственным листом «Накладні» и листом «Результат», а также Excel, экспортированный из приложения. Импорт заменяет текущие данные, поэтому перед ним рекомендуется скачать резервную копию.</div>
+        <div class="top-actions" style="margin-top:12px"><button class="btn primary" onclick="document.getElementById('importExcelFile').click()" data-i18n="settings.uploadExcel">Загрузить Excel</button><input id="importExcelFile" type="file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.xlsx" hidden></div>
+      </div>
+      <div>
+        <h3 data-i18n="settings.backupTitle">Резервное копирование</h3>
+        <div class="top-actions"><button class="btn" onclick="downloadBackup()" data-i18n="settings.downloadJson">Скачать JSON</button><button class="btn" onclick="document.getElementById('restoreFile').click()" data-i18n="settings.restoreJson">Восстановить из JSON</button><input id="restoreFile" type="file" accept="application/json,.json" hidden></div>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="btn" onclick="closeModal('settingsModal')" data-i18n="settings.close">Закрыть</button></div>
+  </div>
+</div>
+
+<div class="loading" id="loading"><div class="spinner"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const LANGS={ru:'Русский',uk:'Українська',en:'English'};
+let lang=(()=>{try{return localStorage.getItem('sf_lang')||'ru'}catch(e){return 'ru'}})();
+const I18N={
+  ru:{
+    'app.title':'СтройФинанс','brand.tagline':'Учёт малого предприятия',
+    'nav.dashboard':'Обзор','nav.projects':'Стройки','nav.overheads':'Накладні','nav.results':'Результат','nav.contracts':'Договоры и акты','nav.execdoc':'Исполнительная документация',
+    'theme.dark':'Тёмная тема','theme.light':'Светлая тема',
+    'side.excel':'Экспортировать Excel','side.backup':'Резервная копия','side.settings':'Настройки',
+    'page.dashboard.title':'Обзор предприятия','page.dashboard.subtitle':'Финансовая картина по всем строительным объектам',
+    'page.projects.title':'Стройки','page.projects.subtitle':'Ввод доходов и расходов по каждому объекту',
+    'page.overheads.title':'Накладні','page.overheads.subtitle':'Общие расходы предприятия — единый раздел для всех строек',
+    'page.results.title':'Результат','page.results.subtitle':'Автоматическая сводная таблица по всем стройкам',
+    'page.contracts.title':'Договоры и акты','page.contracts.subtitle':'Договоры и акты по стройке',
+    'page.execdoc.title':'Исполнительная документация','page.execdoc.subtitle':'Техническая и исполнительная документация по стройке','execdoc.download':'⬇ Загрузить исполнительную документацию','execdoc.desc':'Документация формируется по стройке','execdoc.title':'Договоры и акты выполненных работ','execdoc.subtitle':'Сформированный документ по стройке',
+    'top.excel':'⬇ Excel','top.newProject':'＋ Новая стройка',
+    'modal.cancel':'Отмена','modal.save':'Сохранить',
+    'modal.projectTitleNew':'Новая стройка','modal.projectTitleRename':'Переименовать стройку','modal.projectNameLabel':'Название стройки','modal.projectNamePlaceholder':'Например: ЖК Новосёлки, корпус 2','modal.projectNameHint':'В Excel будет создан отдельный лист. Листы «Накладні» и «Результат» не дублируются.',
+    'modal.entryTitleNew':'Добавить запись','modal.entryTitleEdit':'Изменить запись','modal.sectionLabel':'Раздел','modal.categoryLabel':'Категория','modal.descriptionLabel':'Описание / контрагент','modal.descriptionPlaceholder':'Наименование платежа или получателя','modal.dateLabel':'Дата','modal.amountLabel':'Сумма, ₴','modal.noteLabel':'Примечание','modal.notePlaceholder':'Необязательно',
+    'modal.overheadTitleNew':'Добавить накладные расходы','modal.overheadTitleEdit':'Изменить накладные расходы','modal.paymentTypeLabel':'Вид оплаты','modal.overheadDescLabel':'Описание',
+    'settings.title':'Настройки и данные','settings.rateTitle':'Ставка конвертации наличных','settings.rateLabel':'Процент','settings.saveRate':'Сохранить ставку','settings.rateNote':'Распределяемые общие накладные = безналичные накладные + наличные накладные − корректировка по ставке конвертации. Затем сумма распределяется между стройками пропорционально их обороту.','settings.importTitle':'Импорт данных из Excel','settings.importNote':'Поддерживается исходный шаблон с отдельными листами строек, единственным листом «Накладні» и листом «Результат», а также Excel, экспортированный из приложения. Импорт заменяет текущие данные, поэтому перед ним рекомендуется скачать резервную копию.','settings.uploadExcel':'Загрузить Excel','settings.backupTitle':'Резервное копирование','settings.downloadJson':'Скачать JSON','settings.restoreJson':'Восстановить из JSON','settings.close':'Закрыть',
+    'kpi.totalTurnover':'Общая валовая прибыль','kpi.totalTurnoverHint':'Сумма приходов по всем стройкам','kpi.netProfit':'Чистая прибыль:','kpi.overheads':'Общие накладные','kpi.overheadsHint':'Распределены пропорционально обороту','kpi.projectsCount':'Количество строек','kpi.projectsCountHint':'Активные листы проектов',    'kpi.turnover':'Валовая прибыль:','kpi.contractBalance':'Остаток по договору:','kpi.contractBalanceHint':'Договоры − акты − валовая прибыль','kpi.profitBeforeOverhead':'Прибыль объектная (наличные):','kpi.profitBeforeOverheadHint':'До распределения общих расходов','kpi.overheadShare':'Доля накладных расходов (см. отд. результат):','kpi.overheadShareHint':'Пропорционально обороту','kpi.overheadCashless':'Безналичные накладные','kpi.conversionAdjustment':'Корректировка конвертации','kpi.overheadCash':'Наличные накладные','kpi.toAllocate':'К распределению','kpi.toAllocateHint':'Между всеми стройками','kpi.cashlessBalance':'Остаток безналичных на счёте:','kpi.cashExpensesCompany':'Наличные расходы предприятия:','kpi.conversionExpense':'Расходы на конвертацию наличных (на общий остаток безналичных):',
+    'dash.projectsTitle':'Стройки','dash.projectsSubtitle':'Ключевые показатели каждого объекта','dash.add':'＋ Добавить','dash.emptyTitle':'Пока нет строек','dash.emptyText':'Добавьте первый объект, чтобы начать учёт.',
+    'project.turnover':'Валовая прибыль','project.netProfit':'Чистая прибыль','project.overheadShare':'Доля накладных','project.cashlessExpenses':'Безналичные расходы','project.cashExpenses':'Наличные расходы','project.open':'Открыть стройку →','project.noProjects':'Нет строек','project.noProjectsText':'Создайте первую стройку. Для неё автоматически появится строка в «Результат».','project.newProject':'＋ Новая стройка','project.rename':'✎ Переименовать','project.contracts':'Договоры и акты','project.execdoc':'Исполнительная документация','project.delete':'Удалить стройку','project.sheetPill':'Лист стройки','project.addEntry':'＋ Добавить запись',
+    'section.revenue':'Приходная часть','section.cashless':'Безналичные расходы','section.asset':'Основные средства','section.cash':'Прямые наличные расходы','section.payroll':'Заработная плата',
+    'table.total':'Итого','table.add':'＋ Добавить','table.date':'Дата','table.description':'Описание','table.category':'Категория','table.amount':'Сумма','table.note':'Примечание','table.emptyEntries':'Записей пока нет','table.editTitle':'Изменить','table.deleteTitle':'Удалить',
+    'overhead.title':'Общие расходы предприятия','overhead.subtitle':'Этот список экспортируется в единственный лист «Накладні»','overhead.add':'＋ Добавить расход','overhead.empty':'Накладных расходов пока нет','overhead.type':'Вид',
+    'contract.title':'Договоры','contract.actsTitle':'Акты выполненных работ','contract.nameNumber':'Название','contract.dateLabel':'Дата подписания','contract.amountLabel':'Сумма, ₴','contract.contract':'Договор','contract.act':'Акт','contract.addContract':'＋ Добавить договор','contract.addAct':'＋ Добавить акт','contract.noActs':'Актов пока нет','contract.empty':'Договоров пока нет','contract.noProject':'Выберите стройку, чтобы увидеть её договоры','contract.contractsTotal':'Итог по договорам и актам','contract.sumContracts':'Сумма договоров','contract.sumActs':'Сумма актов','contract.diff':'Остаток (договоры − акты)','contract.hint':'Суммы по выбранной стройке',    'contract.titleNew':'Новый договор','contract.titleEdit':'Изменить договор','contract.nameLabel':'Название договора','contract.actNumberLabel':'Номер акта','contract.actTitleNew':'Добавить акт','contract.actTitleEdit':'Изменить акт','contract.editAct':'Изменить акт','contract.uploadExecDoc':'Загрузить исполнительную документацию','contract.uploadShort':'Документ','contract.execDoc':'Исполнительная документация','execdoc.uploaded':'Документ загружен','execdoc.deleted':'Документ удалён','execdoc.tooBig':'Файл слишком большой (макс. 50 МБ)','confirm.deleteDocument':'Удалить этот документ?',
+    'result.title':'Сводная таблица','result.subtitle':'При добавлении стройки новая строка создаётся автоматически','result.downloadExcel':'EXEL','result.num':'№','result.name':'Наименование','result.turnover':'Валовая прибыль','result.overheads':'Накладные','result.cashless':'Безналичные','result.conversion':'Конвертация','result.cash':'Наличные','result.netProfit':'Чистая прибыль','result.pct':'%','result.empty':'Нет данных','result.total':'ВСЕГО',
+    'result.formulaTitle':'Как рассчитывается результат','result.formulaText1':'Доля накладных стройки определяется по её доле в общем обороте.','result.formula1':'Накладные стройки = общие накладные × оборот стройки / общий оборот','result.formulaText2':'Чистая прибыль:','result.formula2':'Оборот − безналичные расходы − конвертация − наличные расходы − доля накладных','result.coefficients':'Контрольные коэффициенты','result.overheadCoef':'Коэффициент накладных','result.conversionRate':'Ставка конвертации','result.save':'Сохранить',
+    'type.cashless':'Безналичные','type.cash':'Наличные','placeholder.title':'Раздел в разработке','placeholder.text':'Содержимое будет добавлено позже','placeholder.back':'Вернуться к стройке',
+    'ocat.bank':'Банк','ocat.taxes':'Налоги','ocat.adminSalary':'Зарплата администрации','ocat.fuel':'ГСМ и техобслуживание','ocat.rent':'Жильё и аренда','ocat.other':'Другое',
+    'toast.projectAdded':'Стройка добавлена','toast.projectRenamed':'Название изменено','toast.projectDeleted':'Стройка удалена','toast.entryAdded':'Запись добавлена','toast.entryEdited':'Запись изменена','toast.entryDeleted':'Запись удалена','toast.overheadAdded':'Расход добавлен','toast.overheadEdited':'Расход изменён','toast.overheadDeleted':'Расход удалён','toast.contractAdded':'Договор добавлен','toast.contractEdited':'Договор изменён','toast.contractDeleted':'Договор удалён','toast.actAdded':'Акт добавлен','toast.actEdited':'Акт изменён','toast.actDeleted':'Акт удалён','toast.rateSaved':'Ставка сохранена','toast.dataRestored':'Данные восстановлены','toast.imported':'Импортировано: строек {0}, записей {1}, накладных {2}','toast.importFailed':'Не удалось импортировать Excel: ','toast.restoreFailed':'Не удалось восстановить: ','errors.request':'Ошибка запроса',
+    'confirm.deleteProject':'Удалить стройку «{0}» и все её записи?','confirm.deleteEntry':'Удалить эту запись?','confirm.deleteOverhead':'Удалить этот накладной расход?','confirm.deleteContract':'Удалить договор и все его акты?','confirm.deleteAct':'Удалить этот акт?','confirm.import':'Импорт заменит все текущие данные данными из выбранной книги Excel. Продолжить?','confirm.restore':'Текущие данные будут заменены данными из резервной копии. Продолжить?'
+  },
+  uk:{
+    'app.title':'СтройФінанс','brand.tagline':'Облік малого підприємства',
+    'nav.dashboard':'Огляд','nav.projects':'Будівництва','nav.overheads':'Накладні','nav.results':'Результат','nav.contracts':'Договори і акти','nav.execdoc':'Виконавча документація',
+    'theme.dark':'Темна тема','theme.light':'Світла тема',
+    'side.excel':'Експортувати Excel','side.backup':'Резервна копія','side.settings':'Налаштування',
+    'page.dashboard.title':'Огляд підприємства','page.dashboard.subtitle':"Фінансова картина по всіх будівельних об'єктах",
+    'page.projects.title':'Будівництва','page.projects.subtitle':"Введення доходів і витрат по кожному об'єкту",
+    'page.overheads.title':'Накладні','page.overheads.subtitle':'Загальні витрати підприємства — єдиний розділ для всіх будівництв',
+    'page.results.title':'Результат','page.results.subtitle':'Автоматична зведена таблиця по всіх будівництвах',
+    'page.contracts.title':'Договори і акти','page.contracts.subtitle':'Договори та акти по будівництву',
+    'page.execdoc.title':'Виконавча документація','page.execdoc.subtitle':"Технічна та виконавча документація по будівництву",'execdoc.download':'⬇ Завантажити виконавчу документацію','execdoc.desc':'Документація формується по будівництву','execdoc.title':'Договори та акти виконаних робіт','execdoc.subtitle':'Сформований документ по будівництву',
+    'top.excel':'⬇ Excel','top.newProject':'＋ Нове будівництво',
+    'modal.cancel':'Скасувати','modal.save':'Зберегти',
+    'modal.projectTitleNew':'Нове будівництво','modal.projectTitleRename':'Перейменувати будівництво','modal.projectNameLabel':'Назва будівництва','modal.projectNamePlaceholder':'Наприклад: ЖК Новосілки, корпус 2','modal.projectNameHint':'У Excel буде створено окремий аркуш. Аркуші «Накладні» та «Результат» не дублюються.',
+    'modal.entryTitleNew':'Додати запис','modal.entryTitleEdit':'Змінити запис','modal.sectionLabel':'Розділ','modal.categoryLabel':'Категорія','modal.descriptionLabel':'Опис / контрагент','modal.descriptionPlaceholder':'Найменування платежу або отримувача','modal.dateLabel':'Дата','modal.amountLabel':'Сума, ₴','modal.noteLabel':'Примітка','modal.notePlaceholder':"Необов'язково",
+    'modal.overheadTitleNew':'Додати накладні витрати','modal.overheadTitleEdit':'Змінити накладні витрати','modal.paymentTypeLabel':'Вид оплати','modal.overheadDescLabel':'Опис',
+    'settings.title':'Налаштування та дані','settings.rateTitle':'Ставка конвертації готівки','settings.rateLabel':'Відсоток','settings.saveRate':'Зберегти ставку','settings.rateNote':'Накладні, що розподіляються = безготівкові накладні + готівкові накладні − коригування за ставкою конвертації. Потім сума розподіляється між будівництвами пропорційно їх обігу.','settings.importTitle':'Імпорт даних з Excel','settings.importNote':'Підтримується вихідний шаблон з окремими аркушами будівництв, єдиним аркушем «Накладні» та аркушем «Результат», а також Excel, експортований із застосунку. Імпорт замінює поточні дані, тому перед ним рекомендується завантажити резервну копію.','settings.uploadExcel':'Завантажити Excel','settings.backupTitle':'Резервне копіювання','settings.downloadJson':'Скачати JSON','settings.restoreJson':'Відновити з JSON','settings.close':'Закрити',
+    'kpi.totalTurnover':'Загальний валовий прибуток','kpi.totalTurnoverHint':'Сума надходжень по всіх будівництвах','kpi.netProfit':'Чистий прибуток:','kpi.overheads':'Загальні накладні','kpi.overheadsHint':'Розподілені пропорційно обігу','kpi.projectsCount':'Кількість будівництв','kpi.projectsCountHint':'Активні аркуші проектів',    'kpi.turnover':'Валовий прибуток:','kpi.contractBalance':'Залишок за Договором:','kpi.contractBalanceHint':'Договори − акти − валовий прибуток','kpi.profitBeforeOverhead':"Прибуток об'єктний (готівка):",'kpi.profitBeforeOverheadHint':'До розподілу загальних витрат','kpi.overheadShare':'Доля накладних витрат (див. ок результат):','kpi.overheadShareHint':'Пропорційно обігу','kpi.overheadCashless':'Безготівкові накладні','kpi.conversionAdjustment':'Коригування конвертації','kpi.overheadCash':'Готівкові накладні','kpi.toAllocate':'До розподілу','kpi.toAllocateHint':'Між усіма будівництвами','kpi.cashlessBalance':'Залишок безготівки на рахунку:','kpi.cashExpensesCompany':'Готівкові витрати підприємства:','kpi.conversionExpense':'Витрати на конвертацію готівки (на загальний залишок безготівки):',
+    'dash.projectsTitle':'Будівництва','dash.projectsSubtitle':"Ключові показники кожного об'єкта",'dash.add':'＋ Додати','dash.emptyTitle':'Поки немає будівництв','dash.emptyText':"Додайте перший об'єкт, щоб розпочати облік.",
+    'project.turnover':'Валовий прибуток','project.netProfit':'Чистий прибуток','project.overheadShare':'Частка накладних','project.cashlessExpenses':'Безготівкові витрати','project.cashExpenses':'Готівкові витрати','project.open':'Відкрити будівництво →','project.noProjects':'Немає будівництв','project.noProjectsText':"Створіть перше будівництво. Для нього автоматично з'явиться рядок у «Результат».",'project.newProject':'＋ Нове будівництво','project.rename':'✎ Перейменувати','project.contracts':'Договори і акти','project.execdoc':'Виконавча документація','project.delete':'Видалити будівництво','project.sheetPill':'Аркуш будівництва','project.addEntry':'＋ Додати запис',
+    'section.revenue':'Прибуткова частина','section.cashless':'Безготівкові витрати','section.asset':'Основні засоби','section.cash':'Прямі готівкові витрати','section.payroll':'Заробітна плата',
+    'table.total':'Разом','table.add':'＋ Додати','table.date':'Дата','table.description':'Опис','table.category':'Категорія','table.amount':'Сума','table.note':'Примітка','table.emptyEntries':'Записів поки немає','table.editTitle':'Змінити','table.deleteTitle':'Видалити',
+    'overhead.title':'Загальні витрати підприємства','overhead.subtitle':'Цей список експортується в єдиний аркуш «Накладні»','overhead.add':'＋ Додати витрату','overhead.empty':'Накладних витрат поки немає','overhead.type':'Вид',
+    'contract.title':'Договори','contract.actsTitle':'Акти виконаних робіт','contract.nameNumber':'Назва','contract.dateLabel':'Дата підписання','contract.amountLabel':'Сума, ₴','contract.contract':'Договір','contract.act':'Акт','contract.addContract':'＋ Додати договір','contract.addAct':'＋ Додати акт','contract.noActs':'Актів поки немає','contract.empty':'Договорів поки немає','contract.noProject':'Оберіть будівництво, щоб побачити його договори','contract.contractsTotal':'Підсумок за договорами й актами','contract.sumContracts':'Сума договорів','contract.sumActs':'Сума актів','contract.diff':'Залишок (договори − акти)','contract.hint':'Суми по вибраному будівництву',    'contract.titleNew':'Новий договір','contract.titleEdit':'Змінити договір','contract.nameLabel':'Назва договору','contract.actNumberLabel':'Номер акта','contract.actTitleNew':'Додати акт','contract.actTitleEdit':'Змінити акт','contract.editAct':'Змінити акт','contract.uploadExecDoc':'Підвантажити виконавчу документацію','contract.uploadShort':'Документ','contract.execDoc':'Виконавча документація','execdoc.uploaded':'Документ завантажено','execdoc.deleted':'Документ видалено','execdoc.tooBig':'Файл занадто великий (макс. 50 МБ)','confirm.deleteDocument':'Видалити цей документ?',
+    'result.title':'Зведена таблиця','result.subtitle':'При додаванні будівництва новий рядок створюється автоматично','result.downloadExcel':'EXEL','result.num':'№','result.name':'Найменування','result.turnover':'Валовий прибуток','result.overheads':'Накладні','result.cashless':'Безготівкові','result.conversion':'Конвертація','result.cash':'Готівкові','result.netProfit':'Чистий прибуток','result.pct':'%','result.empty':'Немає даних','result.total':'РАЗОМ',
+    'result.formulaTitle':'Як розраховується результат','result.formulaText1':'Частка накладних будівництва визначається за його часткою в загальному обігу.','result.formula1':'Накладні будівництва = загальні накладні × обіг будівництва / загальний обіг','result.formulaText2':'Чистий прибуток:','result.formula2':'Обіг − безготівкові витрати − конвертація − готівкові витрати − частка накладних','result.coefficients':'Контрольні коефіцієнти','result.overheadCoef':'Коефіцієнт накладних','result.conversionRate':'Ставка конвертації','result.save':'Зберегти',
+    'type.cashless':'Безготівкові','type.cash':'Готівкові','placeholder.title':'Розділ у розробці','placeholder.text':'Вміст буде додано пізніше','placeholder.back':'Повернутися до будівництва',
+    'ocat.bank':'Банк','ocat.taxes':'Податки','ocat.adminSalary':'Зарплата адміністрації','ocat.fuel':'ПММ та техобслуговування','ocat.rent':'Житло та оренда','ocat.other':'Інше',
+    'toast.projectAdded':'Будівництво додано','toast.projectRenamed':'Назву змінено','toast.projectDeleted':'Будівництво видалено','toast.entryAdded':'Запис додано','toast.entryEdited':'Запис змінено','toast.entryDeleted':'Запис видалено','toast.overheadAdded':'Витрату додано','toast.overheadEdited':'Витрату змінено','toast.overheadDeleted':'Витрату видалено','toast.contractAdded':'Договір додано','toast.contractEdited':'Договір змінено','toast.contractDeleted':'Договір видалено','toast.actAdded':'Акт додано','toast.actEdited':'Акт змінено','toast.actDeleted':'Акт видалено','toast.rateSaved':'Ставку збережено','toast.dataRestored':'Дані відновлено','toast.imported':'Імпортовано: будівництв {0}, записів {1}, накладних {2}','toast.importFailed':'Не вдалося імпортувати Excel: ','toast.restoreFailed':'Не вдалося відновити: ','errors.request':'Помилка запиту',
+    'confirm.deleteProject':'Видалити будівництво «{0}» та всі його записи?','confirm.deleteEntry':'Видалити цей запис?','confirm.deleteOverhead':'Видалити цю накладну витрату?','confirm.deleteContract':'Видалити договір та всі його акти?','confirm.deleteAct':'Видалити цей акт?','confirm.import':'Імпорт замінить усі поточні дані даними з вибраної книги Excel. Продовжити?','confirm.restore':'Поточні дані буде замінено даними з резервної копії. Продовжити?'
+  },
+  en:{
+    'app.title':'StroyFinance','brand.tagline':'Small business accounting',
+    'nav.dashboard':'Overview','nav.projects':'Sites','nav.overheads':'Overheads','nav.results':'Results','nav.contracts':'Contracts & acts','nav.execdoc':'Executive documentation',
+    'theme.dark':'Dark theme','theme.light':'Light theme',
+    'side.excel':'Export Excel','side.backup':'Backup','side.settings':'Settings',
+    'page.dashboard.title':'Company overview','page.dashboard.subtitle':'Financial picture across all construction sites',
+    'page.projects.title':'Construction sites','page.projects.subtitle':'Enter income and expenses for each site',
+    'page.overheads.title':'Overheads','page.overheads.subtitle':'Company-wide expenses — one shared section for all sites',
+    'page.results.title':'Results','page.results.subtitle':'Automatic summary table across all sites',
+    'page.contracts.title':'Contracts and acts','page.contracts.subtitle':'Contracts and acts for the site',
+    'page.execdoc.title':'Executive documentation','page.execdoc.subtitle':'Technical and executive documentation for the site','execdoc.download':'⬇ Download executive documentation','execdoc.desc':'Documentation is generated for the site','execdoc.title':'Contracts and completed-work acts','execdoc.subtitle':'Generated document for the site',
+    'top.excel':'⬇ Excel','top.newProject':'＋ New site',
+    'modal.cancel':'Cancel','modal.save':'Save',
+    'modal.projectTitleNew':'New construction site','modal.projectTitleRename':'Rename site','modal.projectNameLabel':'Site name','modal.projectNamePlaceholder':'e.g. Novosyolki residential, block 2','modal.projectNameHint':'A separate sheet will be created in Excel. The «Overheads» and «Results» sheets are not duplicated.',
+    'modal.entryTitleNew':'Add entry','modal.entryTitleEdit':'Edit entry','modal.sectionLabel':'Section','modal.categoryLabel':'Category','modal.descriptionLabel':'Description / counterparty','modal.descriptionPlaceholder':'Payment name or recipient','modal.dateLabel':'Date','modal.amountLabel':'Amount, ₴','modal.noteLabel':'Note','modal.notePlaceholder':'Optional',
+    'modal.overheadTitleNew':'Add overhead expense','modal.overheadTitleEdit':'Edit overhead expense','modal.paymentTypeLabel':'Payment type','modal.overheadDescLabel':'Description',
+    'settings.title':'Settings & data','settings.rateTitle':'Cash conversion rate','settings.rateLabel':'Percent','settings.saveRate':'Save rate','settings.rateNote':'Distributable overheads = non-cash overheads + cash overheads − conversion adjustment. The total is then allocated between sites in proportion to their turnover.','settings.importTitle':'Import data from Excel','settings.importNote':'Supported: the original template with separate site sheets, a single «Overheads» sheet and a «Results» sheet, as well as Excel exported from the app. Import replaces current data, so download a backup first.','settings.uploadExcel':'Upload Excel','settings.backupTitle':'Backup','settings.downloadJson':'Download JSON','settings.restoreJson':'Restore from JSON','settings.close':'Close',
+    'kpi.totalTurnover':'Total gross profit','kpi.totalTurnoverHint':'Sum of income across all sites','kpi.netProfit':'Net profit:','kpi.overheads':'Total overheads','kpi.overheadsHint':'Allocated in proportion to turnover','kpi.projectsCount':'Sites','kpi.projectsCountHint':'Active project sheets',    'kpi.turnover':'Gross profit:','kpi.contractBalance':'Contract balance:','kpi.contractBalanceHint':'Contracts − acts − gross profit','kpi.profitBeforeOverhead':'Object profit (cash):','kpi.profitBeforeOverheadHint':'Before allocating company expenses','kpi.overheadShare':'Overhead expenses share (see separate results):','kpi.overheadShareHint':'In proportion to turnover','kpi.overheadCashless':'Non-cash overheads','kpi.conversionAdjustment':'Conversion adjustment','kpi.overheadCash':'Cash overheads','kpi.toAllocate':'To allocate','kpi.toAllocateHint':'Across all sites','kpi.cashlessBalance':'Non-cash balance on account:','kpi.cashExpensesCompany':'Company cash expenses:','kpi.conversionExpense':'Cash conversion expense (on the total non-cash balance):',
+    'dash.projectsTitle':'Sites','dash.projectsSubtitle':'Key metrics of each site','dash.add':'＋ Add','dash.emptyTitle':'No sites yet','dash.emptyText':'Add the first site to start accounting.',
+    'project.turnover':'Gross profit','project.netProfit':'Net profit','project.overheadShare':'Overhead share','project.cashlessExpenses':'Non-cash expenses','project.cashExpenses':'Cash expenses','project.open':'Open site →','project.noProjects':'No sites','project.noProjectsText':'Create your first site. A row in «Results» will be added automatically.','project.newProject':'＋ New site','project.rename':'✎ Rename','project.contracts':'Contracts & acts','project.execdoc':'Executive documentation','project.delete':'Delete site','project.sheetPill':'Site sheet','project.addEntry':'＋ Add entry',
+    'section.revenue':'Income','section.cashless':'Non-cash expenses','section.asset':'Fixed assets','section.cash':'Direct cash expenses','section.payroll':'Payroll',
+    'table.total':'Total','table.add':'＋ Add','table.date':'Date','table.description':'Description','table.category':'Category','table.amount':'Amount','table.note':'Note','table.emptyEntries':'No entries yet','table.editTitle':'Edit','table.deleteTitle':'Delete',
+    'overhead.title':'Company overhead expenses','overhead.subtitle':'This list is exported to the single «Overheads» sheet','overhead.add':'＋ Add expense','overhead.empty':'No overhead expenses yet','overhead.type':'Type',
+    'contract.title':'Contracts','contract.actsTitle':'Completed-work acts','contract.nameNumber':'Name','contract.dateLabel':'Signing date','contract.amountLabel':'Amount, ₴','contract.contract':'Contract','contract.act':'Act','contract.addContract':'＋ Add contract','contract.addAct':'＋ Add act','contract.noActs':'No acts yet','contract.empty':'No contracts yet','contract.noProject':'Select a site to see its contracts','contract.contractsTotal':'Contracts and acts summary','contract.sumContracts':'Total contracts','contract.sumActs':'Total acts','contract.diff':'Balance (contracts − acts)','contract.hint':'Amounts for the selected site',    'contract.titleNew':'New contract','contract.titleEdit':'Edit contract','contract.nameLabel':'Contract name','contract.actNumberLabel':'Act number','contract.actTitleNew':'Add act','contract.actTitleEdit':'Edit act','contract.editAct':'Edit act','contract.uploadExecDoc':'Upload executive documentation','contract.uploadShort':'Document','contract.execDoc':'Executive documentation','execdoc.uploaded':'Document uploaded','execdoc.deleted':'Document deleted','execdoc.tooBig':'File is too large (max 50 MB)','confirm.deleteDocument':'Delete this document?',
+    'result.title':'Summary table','result.subtitle':'A new row is created automatically when a site is added','result.downloadExcel':'EXEL','result.num':'№','result.name':'Name','result.turnover':'Gross profit','result.overheads':'Overheads','result.cashless':'Non-cash','result.conversion':'Conversion','result.cash':'Cash','result.netProfit':'Net profit','result.pct':'%','result.empty':'No data','result.total':'TOTAL',
+    'result.formulaTitle':'How the result is calculated',"result.formulaText1":"A site's overhead share is determined by its share of total turnover.",'result.formula1':'Site overheads = total overheads × site turnover / total turnover','result.formulaText2':'Net profit:','result.formula2':'Turnover − non-cash expenses − conversion − cash expenses − overhead share','result.coefficients':'Control coefficients','result.overheadCoef':'Overhead coefficient','result.conversionRate':'Conversion rate','result.save':'Save',
+    'type.cashless':'Non-cash','type.cash':'Cash','placeholder.title':'Section under development','placeholder.text':'Content will be added later','placeholder.back':'Back to site',
+    'ocat.bank':'Bank','ocat.taxes':'Taxes','ocat.adminSalary':'Admin salaries','ocat.fuel':'Fuel & maintenance','ocat.rent':'Housing & rent','ocat.other':'Other',
+    'toast.projectAdded':'Site added','toast.projectRenamed':'Name updated','toast.projectDeleted':'Site deleted','toast.entryAdded':'Entry added','toast.entryEdited':'Entry updated','toast.entryDeleted':'Entry deleted','toast.overheadAdded':'Expense added','toast.overheadEdited':'Expense updated','toast.overheadDeleted':'Expense deleted','toast.contractAdded':'Contract added','toast.contractEdited':'Contract edited','toast.contractDeleted':'Contract deleted','toast.actAdded':'Act added','toast.actEdited':'Act edited','toast.actDeleted':'Act deleted','toast.rateSaved':'Rate saved','toast.dataRestored':'Data restored','toast.imported':'Imported: {0} sites, {1} entries, {2} overheads','toast.importFailed':'Failed to import Excel: ','toast.restoreFailed':'Failed to restore: ','errors.request':'Request error',
+    'confirm.deleteProject':'Delete site «{0}» and all its entries?','confirm.deleteEntry':'Delete this entry?','confirm.deleteOverhead':'Delete this overhead expense?','confirm.deleteContract':'Delete the contract and all its acts?','confirm.deleteAct':'Delete this act?','confirm.import':'Import will replace all current data with data from the selected Excel workbook. Continue?','confirm.restore':'Current data will be replaced by the backup data. Continue?'
+  }
+};
+const ERRORS={
+  'Введите название стройки':{uk:'Введіть назву будівництва',en:'Enter the site name'},
+  'Название зарезервировано для служебного листа':{uk:'Назву зарезервовано для службового аркуша',en:'The name is reserved for the internal sheet'},
+  'Название слишком длинное':{uk:'Назва занадто довга',en:'The name is too long'},
+  'Сумма должна быть числом':{uk:'Сума має бути числом',en:'Amount must be a number'},
+  'Сумма не может быть отрицательной':{uk:'Сума не може бути від\'ємною',en:'Amount cannot be negative'},
+  'Сумма слишком большая':{uk:'Сума занадто велика',en:'Amount is too large'},
+  'Дата должна быть в формате ГГГГ-ММ-ДД':{uk:'Дата має бути у форматі РРРР-ММ-ДД',en:'Date must be in YYYY-MM-DD format'},
+  'Слишком большой запрос':{uk:'Запит занадто великий',en:'Request is too large'},
+  'Некорректный JSON':{uk:'Некоректний JSON',en:'Invalid JSON'},
+  'Ожидается объект JSON':{uk:'Очікується об\'єкт JSON',en:'A JSON object is expected'},
+  'Выберите файл Excel':{uk:'Виберіть файл Excel',en:'Choose an Excel file'},
+  'Файл Excel слишком большой':{uk:'Файл Excel занадто великий',en:'The Excel file is too large'},
+  'Стройка с таким названием уже существует':{uk:'Будівництво з такою назвою вже існує',en:'A site with this name already exists'},
+  'Стройка не найдена':{uk:'Будівництво не знайдено',en:'Site not found'},
+  'Некорректный раздел':{uk:'Некоректний розділ',en:'Invalid section'},
+  'Некорректный вид накладных':{uk:'Некоректний вид накладних',en:'Invalid overhead type'},
+  'Ставка должна быть от 0 до 1':{uk:'Ставка має бути від 0 до 1',en:'Rate must be between 0 and 1'},
+  'Запись не найдена':{uk:'Запис не знайдено',en:'Entry not found'},
+  'Маршрут не найден':{uk:'Маршрут не знайдено',en:'Route not found'},
+  'Файл не является книгой Excel (.xlsx)':{uk:'Файл не є книгою Excel (.xlsx)',en:'The file is not an Excel workbook (.xlsx)'},
+  'В книге нет листов':{uk:'У книзі немає аркушів',en:'The workbook has no sheets'},
+  'Не удалось распознать данные в выбранной книге Excel':{uk:'Не вдалося розпізнати дані у вибраній книзі Excel',en:'Could not recognize data in the selected Excel workbook'},
+  'Название договора не может быть пустым':{uk:"Назва договору не може бути порожньою",en:'Contract name cannot be empty'},
+  'Номер акта не может быть пустым':{uk:"Номер акта не може бути порожнім",en:'Act number cannot be empty'},
+  'Название слишком длинное':{uk:'Назва занадто довга',en:'The name is too long'},
+  'Договор не найден':{uk:'Договір не знайдено',en:'Contract not found'},
+  'Акт не найден':{uk:'Акт не знайдено',en:'Act not found'}
+};
+const CATEGORIES={
+  cash:{ru:['ГСМ на работу механизмов','Расходные материалы','Ремонт инструмента','Транспортные услуги','Собственный транспорт','Новый инструмент / основные средства','Другое'],uk:['ПММ на роботу механізмів','Розхідні матеріали','Ремонт інструменту','Транспортні послуги','Власний транспорт','Новий інструмент / основні засоби','Інше'],en:['Fuel for machinery','Consumables','Tool repair','Transport services','Own transport','New tools / fixed assets','Other']},
+  payroll:{ru:['Бригада 1','Бригада 2','Прораб','Администрация объекта','Другое'],uk:['Бригада 1','Бригада 2','Виконроб','Адміністрація об\'єкта','Інше'],en:['Crew 1','Crew 2','Site manager','Site administration','Other']}
+};
+const SECTION_KEYS=['revenue','cashless','asset','cash','payroll'];
+let state={projects:[],overheads:[],contracts:[],documents:[],results:{rows:[],totals:{}},settings:{conversion_rate:.14}};
+let currentProjectId=null, editingProjectId=null, editingEntryId=null, editingOverheadId=null, editingContractId=null, editingActId=null, currentPage='dashboard';
+let money,pct,fmtDate;
+const esc=s=>String(s??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+const fmtMoney=v=>{const n=Number(v||0);const s=money.format(n);return n<0?`<span class="neg">${s}</span>`:s};
+const fmtPct=v=>{const n=Number(v||0);const s=pct.format(n);return n<0?`<span class="neg">${s}</span>`:`<span style="color:var(--num)">${s}</span>`};
+const profitClass=v=>Number(v)>=0?'profit-positive':'profit-negative';
+
+function t(key,...args){
+  const table=I18N[lang]||I18N.ru;
+  let s=(table[key]!==undefined)?table[key]:((I18N.ru[key]!==undefined)?I18N.ru[key]:key);
+  args.forEach((a,i)=>{s=String(s).split('{'+i+'}').join(a)});
+  return s;
+}
+function initFormats(){
+  const loc=lang==='uk'?'uk-UA':lang==='en'?'en-US':'ru-RU';
+  money=new Intl.NumberFormat(loc,{style:'currency',currency:'UAH',minimumFractionDigits:2});
+  pct=new Intl.NumberFormat(loc,{style:'percent',minimumFractionDigits:2,maximumFractionDigits:2});
+  fmtDate=s=>s?new Date(s+'T00:00:00').toLocaleDateString(loc):'—';
+}
+function translateError(msg){
+  const m=ERRORS[String(msg||'')];
+  return m?(m[lang]||msg):String(msg||'');
+}
+const OVERHEAD_CATEGORIES={ru:['Банк','Налоги','Зарплата администрации','ГСМ и техобслуживание','Жильё и аренда','Другое'],uk:['Банк','Податки','Зарплата адміністрації','ПММ та техобслуговування','Житло та оренда','Інше'],en:['Bank','Taxes','Admin salaries','Fuel and maintenance','Housing and rent','Other']};
+function sectionLabel(s){return t('section.'+s)}
+function catLabel(section,v){const c=CATEGORIES[section];if(!c)return v;const i=c.ru.indexOf(v);return i>=0?((c[lang]||c.ru)[i]):v}
+function overheadCatLabel(v){const i=OVERHEAD_CATEGORIES.ru.indexOf(v);return i>=0?(OVERHEAD_CATEGORIES[lang]||OVERHEAD_CATEGORIES.ru)[i]:v}
+
+async function api(url,options={}){
+  showLoading(true);
+  try{
+    const res=await fetch(url,{headers:{'Content-Type':'application/json'},...options});
+    const type=res.headers.get('content-type')||'';
+    const data=type.includes('json')?await res.json():await res.text();
+    if(!res.ok)throw new Error(translateError(data.error)||t('errors.request'));
+    return data;
+  }finally{showLoading(false)}
+}
+async function loadState(){
+  try{state=await api('/api/state'); if(!currentProjectId&&state.projects.length)currentProjectId=state.projects[0].id; setPage(currentPage);}
+  catch(e){toast(e.message,true)}
+}
+function showLoading(on){document.getElementById('loading').classList.toggle('show',on)}
+function setTheme(mode){
+  document.documentElement.setAttribute('data-theme',mode);
+  try{localStorage.setItem('sf_theme',mode)}catch(e){}
+  const btn=document.getElementById('themeBtn');
+  if(btn){
+    const ic=btn.querySelector('.icon');if(ic)ic.textContent=mode==='dark'?'☀️':'🌙';
+    const lbl=btn.querySelector('.label');if(lbl)lbl.textContent=t(mode==='dark'?'theme.light':'theme.dark');
+  }
+}
+function toggleTheme(){setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark')}
+function applyStatic(){
+  document.title=t('app.title');
+  document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.dataset.i18n)});
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{el.placeholder=t(el.dataset.i18nPlaceholder)});
+  document.documentElement.lang=lang;
+  document.querySelectorAll('.lang-one').forEach(b=>b.textContent=lang.toUpperCase());
+  setTheme(document.documentElement.getAttribute('data-theme')||'light');
+}
+function cycleLang(){const order=['ru','uk','en'];setLang(order[(order.indexOf(lang)+1)%order.length])}
+function setLang(l){
+  lang=l;
+  try{localStorage.setItem('sf_lang',l)}catch(e){}
+  initFormats();applyStatic();setPage(currentPage);
+}
+function toast(msg,error=false){const el=document.getElementById('toast');el.textContent=msg;el.className='toast show'+(error?' error':'');clearTimeout(el._t);el._t=setTimeout(()=>el.className='toast',3200)}
+function openModal(id){document.getElementById(id).classList.add('open')}
+function closeModal(id){document.getElementById(id).classList.remove('open')}
+function setSelectValue(id,value){const el=document.getElementById(id),text=String(value||'').trim();if(text&&![...el.options].some(o=>o.value===text))el.add(new Option(text,text));if(text)el.value=text}
+function setPage(page){
+  currentPage=page;
+  document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===page));
+  document.querySelectorAll('.nav-btn').forEach(x=>x.classList.toggle('active',x.dataset.page===page));
+  const meta={dashboard:['page.dashboard.title','page.dashboard.subtitle'],projects:['page.projects.title','page.projects.subtitle'],overheads:['page.overheads.title','page.overheads.subtitle'],results:['page.results.title','page.results.subtitle'],contracts:['page.contracts.title','page.contracts.subtitle'],execdoc:['page.execdoc.title','page.execdoc.subtitle']};
+  document.getElementById('pageTitle').textContent=t(meta[page][0]);document.getElementById('pageSubtitle').textContent=t(meta[page][1]);
+  const isProj=page==='projects';
+  const topTitle=document.getElementById('topTitle'),topTools=document.getElementById('topProjectTools');
+  if(topTitle)topTitle.style.display=isProj?'none':'';
+  if(topTools)topTools.style.display=(isProj&&state.projects.length)?'':'none';
+  const topExcel=document.getElementById('topExcel');
+  if(topExcel)topExcel.style.display=['dashboard','projects','overheads','results','contracts'].includes(page)?'':'none';
+  if((page==='projects'||page==='contracts'||page==='execdoc')&&!currentProjectId&&state.projects.length)currentProjectId=state.projects[0].id;
+  renderAll();
+}
+function toggleSidebar(open){const aside=document.querySelector('aside'),ov=document.getElementById('sidebarOverlay');if(ov)ov.classList.toggle('open',open);aside.classList.toggle('open',open)}
+document.querySelectorAll('.nav-btn').forEach(b=>b.onclick=()=>{setPage(b.dataset.page);toggleSidebar(false)});
+document.querySelectorAll('.modal-backdrop').forEach(m=>m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('open')}));
+
+function renderAll(){renderDashboard();renderProjects();renderOverheads();renderResults();renderContracts();renderExecDoc();}
+let sortState={};
+function sortVal(col,e){
+  if(col==='date')return new Date(e.date+'T00:00:00').getTime();
+  if(col==='amount')return Number(e.amount||0);
+  if(col==='desc')return String(e.description||'').toLowerCase();
+  if(col==='note')return String(e.note||'').toLowerCase();
+  if(col==='cat')return String(e.category||'').toLowerCase();
+  if(col==='type')return String(e.group_type||'').toLowerCase();
+  return 0;
+}
+function applySort(key,arr){
+  const st=sortState[key]||{col:'date',dir:-1},dir=st.dir;
+  const out=arr.slice();
+  out.sort((a,b)=>{
+    const x=sortVal(st.col,a),y=sortVal(st.col,b);
+    if(typeof x==='string')return x.localeCompare(y,'ru')*dir;
+    return (x-y)*dir;
+  });
+  return out;
+}
+function toggleSort(key,col){
+  const cur=sortState[key]||{col:'date',dir:-1};
+  if(cur.col===col)cur.dir=-cur.dir;else{cur.col=col;cur.dir=(col==='date'||col==='amount')?-1:1}
+  sortState[key]=cur;renderAll();
+}
+function sortArrow(key,col){
+  const cur=sortState[key];
+  if(!cur||cur.col!==col)return '';
+  return cur.dir>0?'↑':'↓';
+}
+function sortTh(key,col,label,num){
+  return `<th${num?' class="num srt"':' class="srt"'} onclick="toggleSort('${key}','${col}')">${label}${sortArrow(key,col)}</th>`;
+}
+function kpi(label,value,hint='',cls=''){return `<div class="card kpi ${cls}"><div class="label">${esc(label)}</div><div class="value">${value}</div><div class="hint">${hint}</div></div>`}
+function renderDashboard(){
+  const tot=state.results.totals||{};
+  const rows=state.results.rows||[];
+  const cards=rows.map(r=>`<div class="card project-card"><div class="project-card-top"><div><h3>${esc(r.name)}</h3><div class="sub">${esc(t('project.turnover'))}: ${fmtMoney(r.turnover)}</div></div><span class="pill percent ${r.net_profit>=0?'green':'cash'}">${fmtPct(r.profit_percent||0)}</span></div><div class="mini-metrics"><div class="mini"><span>${esc(t('project.netProfit'))}</span><b class="${profitClass(r.net_profit)}">${fmtMoney(r.net_profit)}</b></div><div class="mini"><span>${esc(t('project.overheadShare'))}</span><b>${fmtMoney(r.allocated_overhead)}</b></div><div class="mini"><span>${esc(t('project.cashlessExpenses'))}</span><b>${fmtMoney(r.cashless)}</b></div><div class="mini"><span>${esc(t('project.cashExpenses'))}</span><b>${fmtMoney(r.cash_expenses)}</b></div></div><div style="margin-top:14px"><button class="btn small" onclick="goProject(${r.project_id})">${esc(t('project.open'))}</button></div></div>`).join('');
+  document.getElementById('dashboard').innerHTML=`
+    <div class="grid kpi-grid mono">${kpi(t('kpi.totalTurnover'),fmtMoney(tot.turnover),t('kpi.totalTurnoverHint'))}${kpi(t('kpi.netProfit'),fmtMoney(tot.net_profit),fmtPct(tot.profit_percent||0),tot.net_profit>=0?'good':'bad')}${kpi(t('kpi.overheads'),fmtMoney(tot.allocated_overhead),t('kpi.overheadsHint'),'amber')}${kpi(t('kpi.projectsCount'),state.projects.length,t('kpi.projectsCountHint'))}</div>
+    <div class="card section-card"><div class="section-head"><div><h2>${esc(t('dash.projectsTitle'))}</h2><p>${esc(t('dash.projectsSubtitle'))}</p></div><button class="btn primary small" onclick="openProjectModal()">${esc(t('dash.add'))}</button></div><div class="section-body"><div class="grid project-grid">${cards||`<div class="empty"><strong>${esc(t('dash.emptyTitle'))}</strong>${esc(t('dash.emptyText'))}</div>`}</div></div></div>`;
+}
+function goProject(id){currentProjectId=id;setPage('projects')}
+function renderProjects(){
+  const root=document.getElementById('projects');
+  if(!state.projects.length){root.innerHTML=`<div class="card empty"><strong>${esc(t('project.noProjects'))}</strong><p>${esc(t('project.noProjectsText'))}</p><button class="btn primary" onclick="openProjectModal()">${esc(t('project.newProject'))}</button></div>`;const tt=document.getElementById('topTitle'),tp=document.getElementById('topProjectTools');if(tt)tt.style.display='';if(tp){tp.style.display='none';tp.innerHTML=''}return}
+  let project=state.projects.find(p=>p.id===Number(currentProjectId))||state.projects[0];currentProjectId=project.id;
+  const result=state.results.rows.find(r=>r.project_id===project.id)||{};
+  const options=state.projects.map(p=>`<option value="${p.id}" ${p.id===project.id?'selected':''}>${esc(p.name)}</option>`).join('');
+  const sections=SECTION_KEYS.map(sec=>renderProjectSection(project,sec)).join('');
+  const contracts=(state.contracts||[]).filter(c=>c.project_id===project.id);
+  const contractsSum=contracts.reduce((s,c)=>s+Number(c.amount||0),0);
+  const actsSum=contracts.reduce((s,c)=>s+(c.acts||[]).reduce((a,x)=>a+Number(x.amount||0),0),0);
+  const contractBalance=contractsSum-actsSum-Number(result.turnover||0);
+  const tools=document.getElementById('topProjectTools');
+  if(tools)tools.innerHTML=`<select onchange="currentProjectId=Number(this.value);renderProjects()">${options}</select><button class="btn" onclick="setPage('contracts')">${esc(t('project.contracts'))}</button><button class="btn" onclick="setPage('execdoc')">${esc(t('project.execdoc'))}</button><button class="btn primary" onclick="openProjectModal()">${esc(t('top.newProject'))}</button>`;
+  root.innerHTML=`
+    <div class="grid kpi-grid proj">${kpi(t('kpi.turnover'),fmtMoney(result.turnover))}${kpi(t('kpi.cashlessBalance'),fmtMoney(result.balance||0))}${kpi(t('kpi.cashExpensesCompany'),fmtMoney(result.cash_expenses||0))}<div class="card kpi kpi-conversion"><div class="label">${esc(t('kpi.conversionExpense'))}</div><div class="value">${fmtMoney(result.conversion||0)}</div><div class="hint"><div style="display:flex;gap:6px;align-items:center;margin-top:8px"><input class="field" id="rateQuickProj" type="number" min="0" max="100" step="0.1" value="${(Number(state.settings.conversion_rate||0)*100).toFixed(1)}" style="width:84px;padding:6px 8px"><span style="color:var(--muted)">%</span><button class="btn small primary" onclick="saveRateById('rateQuickProj')">${esc(t('result.save'))}</button></div></div></div>${kpi(t('kpi.profitBeforeOverhead'),fmtMoney(result.profit_before_overhead),t('kpi.profitBeforeOverheadHint'),result.profit_before_overhead>=0?'good':'bad')}${kpi(t('kpi.overheadShare'),fmtMoney(result.allocated_overhead),t('kpi.overheadShareHint'),'amber')}${kpi(t('kpi.netProfit'),fmtMoney(result.net_profit),fmtPct(result.profit_percent||0),result.net_profit>=0?'good':'bad')}${kpi(t('kpi.contractBalance'),fmtMoney(contractBalance),t('kpi.contractBalanceHint'),contractBalance>=0?'good':'bad')}</div>
+    <div class="section-stack">${sections}</div>
+    <div class="selector-row" style="margin-top:16px;justify-content:flex-end"><button class="btn danger" onclick="deleteProject(${project.id})">${esc(t('project.delete'))}</button></div>`;
+}
+function renderContracts(){
+  const pid=Number(currentProjectId);
+  const project=state.projects.find(p=>p.id===pid);
+  const root=document.getElementById('contracts');
+  if(!project){root.innerHTML=`<div class="card empty"><strong>${esc(t('contract.noProject'))}</strong><button class="btn" onclick="setPage('projects')">${esc(t('placeholder.back'))}</button></div>`;return}
+  const contracts=(state.contracts||[]).filter(c=>c.project_id===pid);
+  const acts=contracts.flatMap(c=>(c.acts||[]).map(a=>({...a,contract:c})));
+  const contractsSum=contracts.reduce((s,c)=>s+Number(c.amount||0),0);
+  const actsSum=acts.reduce((s,a)=>s+Number(a.amount||0),0);
+  const diff=contractsSum-actsSum;
+  const contractRows=contracts.map(c=>`<tr><td><b>${esc(c.name)}</b></td><td>${fmtDate(c.date)}</td><td class="num">${fmtMoney(c.amount)}</td><td class="num"><button class="btn icon small" title="${esc(t('table.editTitle'))}" onclick="openContractModal(${c.id})">✎</button> <button class="btn icon small danger" title="${esc(t('table.deleteTitle'))}" onclick="deleteContract(${c.id})">×</button></td></tr>`).join('');
+  const actRows=acts.map(a=>`<tr><td>${esc(a.contract.name)}</td><td>${esc(t('contract.act'))} №${esc(a.number)}</td><td>${fmtDate(a.date)}</td><td class="num">${fmtMoney(a.amount)}</td><td class="num"><button class="btn small primary" title="${esc(t('contract.uploadExecDoc'))}" onclick="pickExecDoc(${a.id})">⬆ ${esc(t('contract.uploadShort'))}</button> <button class="btn icon small" title="${esc(t('contract.editAct'))}" onclick="openActModal(${a.contract.id},${a.id})">✎</button> <button class="btn icon small danger" title="${esc(t('table.deleteTitle'))}" onclick="deleteAct(${a.id})">×</button></td></tr>`).join('');
+  root.innerHTML=`
+    <div class="card section-card"><div class="section-head"><div><h2>${esc(t('contract.contractsTotal'))}</h2><p>${esc(t('contract.hint'))}</p></div><div style="display:flex;gap:28px;align-items:center;flex-wrap:wrap"><div><div class="muted">${esc(t('contract.sumContracts'))}</div><div style="font-size:22px;font-weight:800;color:var(--num)">${fmtMoney(contractsSum)}</div></div><div><div class="muted">${esc(t('contract.sumActs'))}</div><div style="font-size:22px;font-weight:800;color:var(--num)">${fmtMoney(actsSum)}</div></div><div><div class="muted">${esc(t('contract.diff'))}</div><div style="font-size:26px;font-weight:800;color:${diff>=0?'var(--green)':'var(--red)'}">${fmtMoney(diff)}</div></div></div></div></div>
+    <div class="card section-card"><div class="section-head"><div><h2>${esc(t('contract.title'))}</h2></div><button class="btn primary" onclick="openContractModal()">${esc(t('contract.addContract'))}</button></div><div class="table-wrap"><table class="data-table"><thead><tr><th>${esc(t('contract.nameNumber'))}</th><th>${esc(t('contract.dateLabel'))}</th><th class="num">${esc(t('contract.amountLabel'))}</th><th></th></tr></thead><tbody>${contractRows||`<tr><td colspan="4" class="empty">${esc(t('contract.empty'))}</td></tr>`}</tbody></table></div></div>
+    <div class="card section-card"><div class="section-head"><div><h2>${esc(t('contract.actsTitle'))}</h2></div><button class="btn primary" onclick="openActModal()">${esc(t('contract.addAct'))}</button></div><div class="table-wrap"><table class="data-table"><thead><tr><th>${esc(t('contract.contract'))}</th><th>${esc(t('contract.actNumberLabel'))}</th><th>${esc(t('contract.dateLabel'))}</th><th class="num">${esc(t('contract.amountLabel'))}</th><th>${esc(t('contract.execDoc'))}</th></tr></thead><tbody>${actRows||`<tr><td colspan="5" class="empty">${esc(t('contract.noActs'))}</td></tr>`}</tbody></table></div></div>`;
+}
+function renderExecDoc(){
+  const project=state.projects.find(p=>p.id===Number(currentProjectId));
+  document.getElementById('execdoc').innerHTML=`<div class="card section-card"><div class="section-head"><div><h2>${esc(t('execdoc.title'))}</h2><p>${esc(t('execdoc.subtitle'))}</p></div><button class="btn primary" onclick="downloadExecDoc()">${esc(t('execdoc.download'))}</button></div><div class="section-body">${project?`<p>${esc(t('execdoc.desc'))}: <b>${esc(project.name)}</b></p>`:''}</div></div>`;
+}
+function downloadExecDoc(){
+  const pid=currentProjectId||(state.projects[0]&&state.projects[0].id);
+  if(!pid){toast(t('result.empty'));return}
+  window.location='/api/export/execdoc.docx?project_id='+pid;
+}
+let uploadActId=null;
+function pickExecDoc(actId){uploadActId=actId;document.getElementById('execDocFileInput').click()}
+document.getElementById('execDocFileInput').onchange=async function(){
+  const file=this.files[0];this.value='';
+  if(!file)return;
+  const pid=currentProjectId||(state.projects[0]&&state.projects[0].id);
+  if(!pid){toast(t('result.empty'));return}
+  if(file.size>50*1024*1024){toast(t('execdoc.tooBig'),true);return}
+  showLoading(true);
+  try{
+    const qs=uploadActId?'&act_id='+uploadActId:'';
+    const res=await fetch('/api/projects/'+pid+'/documents?filename='+encodeURIComponent(file.name)+qs,{method:'POST',body:file});
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok)throw new Error(data.error||t('errors.request'));
+    state=data.state;renderAll();toast(t('execdoc.uploaded'));
+  }catch(e){toast(e.message,true)}
+  finally{uploadActId=null;showLoading(false)}
+};
+async function deleteDocument(id){if(!confirm(t('confirm.deleteDocument')))return;try{const r=await api('/api/documents/'+id,{method:'DELETE'});state=r.state;renderAll();toast(t('execdoc.deleted'))}catch(e){toast(e.message,true)}}
+function renderProjectSection(project,section){
+  const key=project.id+'_'+section;
+  const entries=applySort(key,project.entries.filter(e=>e.section===section));
+  const total=entries.reduce((s,e)=>s+Number(e.amount||0),0);
+  const rows=entries.map(e=>`<tr><td>${fmtDate(e.date)}</td><td>${esc(e.description||'—')}</td>${['cash','payroll'].includes(section)?`<td>${section==='cash'?`<span class="pill cash">${esc(catLabel(section,e.category||'Другое'))}</span>`:esc(catLabel(section,e.category||'Другое'))}</td>`:''}<td class="num">${fmtMoney(e.amount)}</td><td>${esc(e.note||'')}</td><td class="num"><button class="btn icon small" title="${esc(t('table.editTitle'))}" onclick="openEntryModal(${project.id},'${section}',${e.id})">✎</button> <button class="btn icon small danger" title="${esc(t('table.deleteTitle'))}" onclick="deleteEntry(${e.id})">×</button></td></tr>`).join('');
+  return `<div class="card section-card"><div class="section-head"><div><h3>${esc(sectionLabel(section))}</h3><p>${esc(t('table.total'))}: <b style="color:var(--num)">${fmtMoney(total)}</b></p></div><button class="btn small" onclick="openEntryModal(${project.id},'${section}')">${esc(t('table.add'))}</button></div><div class="table-wrap"><table class="data-table"><thead><tr>${sortTh(key,'date',esc(t('table.date')))}${sortTh(key,'desc',esc(t('table.description')))}${['cash','payroll'].includes(section)?sortTh(key,'cat',esc(t('table.category'))):''}${sortTh(key,'amount',esc(t('table.amount')),true)}${sortTh(key,'note',esc(t('table.note')))}<th></th></tr></thead><tbody>${rows||`<tr><td colspan="${['cash','payroll'].includes(section)?6:5}" class="empty">${esc(t('table.emptyEntries'))}</td></tr>`}</tbody></table></div></div>`;
+}
+function renderOverheads(){
+  const tot=state.results.totals||{};
+  const sorted=applySort('overheads',state.overheads);
+  const rows=sorted.map(e=>`<tr><td>${fmtDate(e.date)}</td><td>${esc(e.description)}</td><td>${e.group_type==='cash'?`<span class="pill cash">${esc(t('type.cash'))}</span>`:esc(t('type.cashless'))}</td><td>${esc(overheadCatLabel(e.category||'Другое'))}</td><td class="num">${fmtMoney(e.amount)}</td><td class="num"><button class="btn icon small" onclick="openOverheadModal(${e.id})">✎</button> <button class="btn icon small danger" onclick="deleteOverhead(${e.id})">×</button></td></tr>`).join('');
+  document.getElementById('overheads').innerHTML=`
+    <div class="grid kpi-grid">${kpi(t('kpi.overheadCashless'),fmtMoney(tot.overhead_cashless))}${kpi(t('kpi.conversionAdjustment'),fmtMoney(tot.overhead_adjustment),fmtPct(state.settings.conversion_rate||0),'amber')}${kpi(t('kpi.overheadCash'),fmtMoney(tot.overhead_cash))}${kpi(t('kpi.toAllocate'),fmtMoney(tot.allocated_overhead),t('kpi.toAllocateHint'),'good')}</div>
+    <div class="card section-card"><div class="section-head"><div><h2>${esc(t('overhead.title'))}</h2><p>${esc(t('overhead.subtitle'))}</p></div><button class="btn primary" onclick="openOverheadModal()">${esc(t('overhead.add'))}</button></div><div class="table-wrap"><table class="data-table"><thead><tr>${sortTh('overheads','date',esc(t('table.date')))}${sortTh('overheads','desc',esc(t('table.description')))}${sortTh('overheads','type',esc(t('overhead.type')))}${sortTh('overheads','cat',esc(t('table.category')))}${sortTh('overheads','amount',esc(t('table.amount')),true)}<th></th></tr></thead><tbody>${rows||`<tr><td colspan="6" class="empty">${esc(t('overhead.empty'))}</td></tr>`}</tbody></table></div></div>`;
+}
+function renderResults(){
+  const rows=state.results.rows||[],tot=state.results.totals||{};
+  const body=rows.map((r,i)=>`<tr><td>${i+1}</td><td><b>${esc(r.name)}</b></td><td class="num">${fmtMoney(r.turnover)}</td><td class="num">${fmtMoney(r.allocated_overhead)}</td><td class="num">${fmtMoney(r.cashless)}</td><td class="num">${fmtMoney(r.conversion)}</td><td class="num">${fmtMoney(r.cash_expenses)}</td><td class="num ${profitClass(r.net_profit)}">${fmtMoney(r.net_profit)}</td><td class="num ${profitClass(r.profit_percent)}">${pct.format(r.profit_percent||0)}</td></tr>`).join('');
+  document.getElementById('results').innerHTML=`
+    <div class="section-stack"><div class="card section-card"><div class="section-head"><div><h2>${esc(t('result.title'))}</h2><p>${esc(t('result.subtitle'))}</p></div><button class="btn" onclick="downloadExcelPage()">${esc(t('result.downloadExcel'))}</button></div><div class="table-wrap"><table class="data-table"><thead><tr><th>${esc(t('result.num'))}</th><th>${esc(t('result.name'))}</th><th class="num">${esc(t('result.turnover'))}</th><th class="num">${esc(t('result.overheads'))}</th><th class="num">${esc(t('result.cashless'))}</th><th class="num">${esc(t('result.conversion'))}</th><th class="num">${esc(t('result.cash'))}</th><th class="num">${esc(t('result.netProfit'))}</th><th class="num">${esc(t('result.pct'))}</th></tr></thead><tbody>${body||`<tr><td colspan="9" class="empty">${esc(t('result.empty'))}</td></tr>`}<tr class="totals-row"><td></td><td>${esc(t('result.total'))}</td><td class="num">${fmtMoney(tot.turnover)}</td><td class="num">${fmtMoney(tot.allocated_overhead)}</td><td class="num">${fmtMoney(tot.cashless)}</td><td class="num">${fmtMoney(tot.conversion)}</td><td class="num">${fmtMoney(tot.cash_expenses)}</td><td class="num ${profitClass(tot.net_profit)}">${fmtMoney(tot.net_profit)}</td><td class="num ${profitClass(tot.profit_percent)}">${pct.format(tot.profit_percent||0)}</td></tr></tbody></table></div></div>
+    <div class="formula-box"><h3>${esc(t('result.formulaTitle'))}</h3><p><b>${esc(t('result.formulaText1'))}</b></p><div class="formula">${esc(t('result.formula1'))}</div><p><b>${esc(t('result.formulaText2'))}</b></p><div class="formula">${esc(t('result.formula2'))}</div></div><div class="card section-body"><h3 style="margin-top:0">${esc(t('result.coefficients'))}</h3><div class="mini-metrics"><div class="mini"><span>${esc(t('result.overheadCoef'))}</span><b>${pct.format(tot.overhead_coefficient||0)}</b></div></div></div></div>`;
+}
+
+function openProjectModal(id=null){editingProjectId=id;const p=state.projects.find(x=>x.id===Number(id));document.getElementById('projectModalTitle').textContent=t(p?'modal.projectTitleRename':'modal.projectTitleNew');document.getElementById('projectName').value=p?.name||'';openModal('projectModal');setTimeout(()=>document.getElementById('projectName').focus(),50)}
+document.getElementById('projectForm').onsubmit=async e=>{e.preventDefault();try{const name=document.getElementById('projectName').value;if(editingProjectId){const r=await api('/api/projects/'+editingProjectId,{method:'PUT',body:JSON.stringify({name})});state=r.state;toast(t('toast.projectRenamed'))}else{const r=await api('/api/projects',{method:'POST',body:JSON.stringify({name})});state=r.state;currentProjectId=r.id;toast(t('toast.projectAdded'))}closeModal('projectModal');renderAll()}catch(err){toast(err.message,true)}};
+async function deleteProject(id){const p=state.projects.find(x=>x.id===id);if(!confirm(t('confirm.deleteProject',p?.name||'')))return;try{const r=await api('/api/projects/'+id,{method:'DELETE'});state=r.state;currentProjectId=state.projects[0]?.id||null;renderAll();toast(t('toast.projectDeleted'))}catch(e){toast(e.message,true)}}
+
+function refreshEntryCategories(){const sec=document.getElementById('entrySection').value;const group=document.getElementById('entryCategoryGroup');group.style.display=['cash','payroll'].includes(sec)?'grid':'none';const values=CATEGORIES[sec]?CATEGORIES[sec].ru:[];document.getElementById('entryCategory').innerHTML=values.map(v=>`<option value="${esc(v)}">${esc(catLabel(sec,v))}</option>`).join('')}
+document.getElementById('entrySection').onchange=refreshEntryCategories;
+function openEntryModal(projectId,section='revenue',entryId=null){
+  currentProjectId=Number(projectId);editingEntryId=entryId;
+  const p=state.projects.find(x=>x.id===currentProjectId),entry=p?.entries.find(x=>x.id===Number(entryId));
+  document.getElementById('entryModalTitle').textContent=t(entry?'modal.entryTitleEdit':'modal.entryTitleNew');
+  document.getElementById('entrySection').innerHTML=SECTION_KEYS.map(k=>`<option value="${k}">${esc(sectionLabel(k))}</option>`).join('');
+  document.getElementById('entrySection').value=entry?.section||section;refreshEntryCategories();
+  if(entry?.category)setSelectValue('entryCategory',entry.category);
+  document.getElementById('entryDescription').value=entry?.description||'';document.getElementById('entryDate').value=entry?.date||new Date().toISOString().slice(0,10);document.getElementById('entryAmount').value=entry?.amount??'';document.getElementById('entryNote').value=entry?.note||'';openModal('entryModal')
+}
+document.getElementById('entryForm').onsubmit=async e=>{e.preventDefault();const payload={section:document.getElementById('entrySection').value,category:document.getElementById('entryCategory').value,description:document.getElementById('entryDescription').value,date:document.getElementById('entryDate').value,amount:document.getElementById('entryAmount').value,note:document.getElementById('entryNote').value};try{const url=editingEntryId?'/api/entries/'+editingEntryId:`/api/projects/${currentProjectId}/entries`;const r=await api(url,{method:editingEntryId?'PUT':'POST',body:JSON.stringify(payload)});state=r.state;closeModal('entryModal');renderAll();toast(t(editingEntryId?'toast.entryEdited':'toast.entryAdded'))}catch(err){toast(err.message,true)}};
+async function deleteEntry(id){if(!confirm(t('confirm.deleteEntry')))return;try{const r=await api('/api/entries/'+id,{method:'DELETE'});state=r.state;renderAll();toast(t('toast.entryDeleted'))}catch(e){toast(e.message,true)}}
+
+function openOverheadModal(id=null){editingOverheadId=id;const e=state.overheads.find(x=>x.id===Number(id));document.getElementById('overheadModalTitle').textContent=t(e?'modal.overheadTitleEdit':'modal.overheadTitleNew');document.getElementById('overheadGroup').value=e?.group_type||'cashless';setSelectValue('overheadCategory',e?.category||'Банк');document.getElementById('overheadDescription').value=e?.description||'';document.getElementById('overheadDate').value=e?.date||new Date().toISOString().slice(0,10);document.getElementById('overheadAmount').value=e?.amount??'';openModal('overheadModal')}
+document.getElementById('overheadForm').onsubmit=async e=>{e.preventDefault();const payload={group_type:document.getElementById('overheadGroup').value,category:document.getElementById('overheadCategory').value,description:document.getElementById('overheadDescription').value,date:document.getElementById('overheadDate').value,amount:document.getElementById('overheadAmount').value};try{const url=editingOverheadId?'/api/overheads/'+editingOverheadId:'/api/overheads';const r=await api(url,{method:editingOverheadId?'PUT':'POST',body:JSON.stringify(payload)});state=r.state;closeModal('overheadModal');renderAll();toast(t(editingOverheadId?'toast.overheadEdited':'toast.overheadAdded'))}catch(err){toast(err.message,true)}};
+async function deleteOverhead(id){if(!confirm(t('confirm.deleteOverhead')))return;try{const r=await api('/api/overheads/'+id,{method:'DELETE'});state=r.state;renderAll();toast(t('toast.overheadDeleted'))}catch(e){toast(e.message,true)}}
+
+function openContractModal(id=null){editingContractId=id;const c=(state.contracts||[]).find(x=>x.id===Number(id));document.getElementById('contractModalTitle').textContent=t(c?'contract.titleEdit':'contract.titleNew');document.getElementById('contractName').value=c?.name||'';document.getElementById('contractDate').value=c?.date||new Date().toISOString().slice(0,10);document.getElementById('contractAmount').value=c?.amount??'';openModal('contractModal')}
+document.getElementById('contractForm').onsubmit=async e=>{e.preventDefault();const payload={project_id:Number(currentProjectId),name:document.getElementById('contractName').value,date:document.getElementById('contractDate').value,amount:document.getElementById('contractAmount').value};try{const url=editingContractId?'/api/contracts/'+editingContractId:'/api/contracts';const r=await api(url,{method:editingContractId?'PUT':'POST',body:JSON.stringify(payload)});state=r.state;closeModal('contractModal');renderAll();toast(t(editingContractId?'toast.contractEdited':'toast.contractAdded'))}catch(err){toast(err.message,true)}};
+async function deleteContract(id){if(!confirm(t('confirm.deleteContract')))return;try{const r=await api('/api/contracts/'+id,{method:'DELETE'});state=r.state;renderAll();toast(t('toast.contractDeleted'))}catch(e){toast(e.message,true)}}
+function openActModal(contractId=null,id=null){
+  editingActId=id;
+  const list=(state.contracts||[]).filter(c=>c.project_id===Number(currentProjectId));
+  const sel=document.getElementById('actContract');
+  sel.innerHTML=list.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
+  let found=null;
+  for(const c of list){const a=(c.acts||[]).find(x=>x.id===Number(id));if(a){found={c,a};break}}
+  sel.value=found?found.c.id:(contractId||(list[0]&&list[0].id)||'');
+  document.getElementById('actModalTitle').textContent=t(found?'contract.actTitleEdit':'contract.actTitleNew');
+  document.getElementById('actNumber').value=found?.a.number||'';
+  document.getElementById('actDate').value=found?.a.date||new Date().toISOString().slice(0,10);
+  document.getElementById('actAmount').value=found?.a.amount??'';
+  openModal('actModal');
+}
+document.getElementById('actForm').onsubmit=async e=>{e.preventDefault();const cid=Number(document.getElementById('actContract').value);const payload={number:document.getElementById('actNumber').value,date:document.getElementById('actDate').value,amount:document.getElementById('actAmount').value};try{const url=editingActId?'/api/acts/'+editingActId:'/api/contracts/'+cid+'/acts';const r=await api(url,{method:editingActId?'PUT':'POST',body:JSON.stringify(payload)});state=r.state;closeModal('actModal');renderAll();toast(t(editingActId?'toast.actEdited':'toast.actAdded'))}catch(err){toast(err.message,true)}};
+async function deleteAct(id){if(!confirm(t('confirm.deleteAct')))return;try{const r=await api('/api/acts/'+id,{method:'DELETE'});state=r.state;renderAll();toast(t('toast.actDeleted'))}catch(e){toast(e.message,true)}}
+
+function downloadExcel(){window.location='/api/export.xlsx'}function downloadBackup(){window.location='/api/backup.json'}
+function downloadExcelPage(){
+  let page=currentPage,query='';
+  if(page==='projects'||page==='contracts'){
+    const pid=currentProjectId||(state.projects[0]&&state.projects[0].id);
+    if(!pid){toast(t('result.empty'));return}
+    query='?project_id='+pid;
+  }
+  if(['dashboard','projects','overheads','results','contracts'].indexOf(page)<0)return;
+  window.location='/api/export/'+page+'.xlsx'+query;
+}
+function openSettings(){openModal('settingsModal')}
+async function saveRateById(id){try{const val=Number(document.getElementById(id).value)/100;const r=await api('/api/settings',{method:'POST',body:JSON.stringify({conversion_rate:val})});state=r.state;renderAll();toast(t('toast.rateSaved'))}catch(e){toast(e.message,true)}}
+document.getElementById('importExcelFile').onchange=async function(){const file=this.files[0];if(!file)return;if(!confirm(t('confirm.import'))){this.value='';return}try{const r=await api('/api/import.xlsx',{method:'POST',headers:{'Content-Type':'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'},body:await file.arrayBuffer()});state=r.state;currentProjectId=state.projects[0]?.id||null;renderAll();closeModal('settingsModal');const x=r.summary||{};toast(t('toast.imported',x.projects||0,x.project_entries||0,x.overheads||0))}catch(e){toast(t('toast.importFailed')+e.message,true)}this.value=''};
+document.getElementById('restoreFile').onchange=async function(){const file=this.files[0];if(!file)return;if(!confirm(t('confirm.restore'))){this.value='';return}try{const data=JSON.parse(await file.text());const r=await api('/api/restore',{method:'POST',body:JSON.stringify(data)});state=r.state;currentProjectId=state.projects[0]?.id||null;renderAll();closeModal('settingsModal');toast(t('toast.dataRestored'))}catch(e){toast(t('toast.restoreFailed')+e.message,true)}this.value=''};
+
+initFormats();
+setTheme(document.documentElement.getAttribute('data-theme')==='dark'?'dark':'light');
+applyStatic();
+loadState();
+</script>
+</body>
+</html>

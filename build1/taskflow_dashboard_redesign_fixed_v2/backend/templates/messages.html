@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block main %}
+<div class="page-container">
+    <h1 class="page-title">{{ t('messages_title') }}</h1>
+    <div class="panel">
+        <div class="panel-title"><i class="fa-solid fa-comment-dots"></i> {{ t('messages_inbox') }}</div>
+        <div class="messages-list">
+            <div class="empty-state">
+                <i class="fa-regular fa-envelope empty-state-icon"></i>
+                <h3>{{ t('messages_empty') }}</h3>
+                <p>{{ t('messages_empty_hint') }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

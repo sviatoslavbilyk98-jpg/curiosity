@@ -1,0 +1,50 @@
+{% extends "layout.html" %}
+{% block main %}
+<div class="page-container">
+    <div class="page-header">
+        <h1 class="page-title">{{ t('plans_title') }}</h1>
+        <p class="page-subtitle">{{ t('plans_subtitle') }}</p>
+    </div>
+
+    <div class="plans-grid">
+        <div class="plan-card">
+            <div class="plan-name">{{ t('plans_free') }}</div>
+            <div class="plan-price">$0</div>
+            <div class="plan-desc">{{ t('plans_free_desc') }}</div>
+            <ul class="plan-features">
+                <li><i class="fa-solid fa-check"></i> 5 задач</li>
+                <li><i class="fa-solid fa-check"></i> 1 спілка</li>
+                <li><i class="fa-solid fa-check"></i> Базовий пошук</li>
+            </ul>
+            <div class="plan-badge current">{{ t('plans_current') }}</div>
+        </div>
+
+        <div class="plan-card featured">
+            <div class="plan-name">{{ t('plans_pro') }}</div>
+            <div class="plan-price">$9<span>/mo</span></div>
+            <div class="plan-desc">{{ t('plans_pro_desc') }}</div>
+            <ul class="plan-features">
+                <li><i class="fa-solid fa-check"></i> 100 задач</li>
+                <li><i class="fa-solid fa-check"></i> 10 спілок</li>
+                <li><i class="fa-solid fa-check"></i> Розширений пошук</li>
+                <li><i class="fa-solid fa-check"></i> Пріоритетна підтримка</li>
+            </ul>
+            <a href="{{ url_for('pay', plan='pro') }}" class="plan-btn">{{ t('plans_buy') }}</a>
+        </div>
+
+        <div class="plan-card">
+            <div class="plan-name">{{ t('plans_enterprise') }}</div>
+            <div class="plan-price">$29<span>/mo</span></div>
+            <div class="plan-desc">{{ t('plans_enterprise_desc') }}</div>
+            <ul class="plan-features">
+                <li><i class="fa-solid fa-check"></i> Безліміт задач</li>
+                <li><i class="fa-solid fa-check"></i> Безліміт спілок</li>
+                <li><i class="fa-solid fa-check"></i> Повнотекстовий пошук</li>
+                <li><i class="fa-solid fa-check"></i> API доступ</li>
+                <li><i class="fa-solid fa-check"></i> Виділений менеджер</li>
+            </ul>
+            <a href="{{ url_for('pay', plan='enterprise') }}" class="plan-btn">{{ t('plans_buy') }}</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

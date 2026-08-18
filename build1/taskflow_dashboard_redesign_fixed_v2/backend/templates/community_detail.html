@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block main %}
+<div class="page-container">
+    {% if community %}
+    <h1 class="page-title">{{ community.display_name }}</h1>
+    <div class="panel">
+        <div class="panel-title"><i class="fa-solid fa-users"></i> {{ t('communities_members') }}</div>
+        <div class="community-detail-info">
+            <p>{{ t('communities_desc') }}</p>
+        </div>
+    </div>
+    {% else %}
+    <h1 class="page-title">{{ t('communities_not_found') }}</h1>
+    {% endif %}
+</div>
+{% endblock %}

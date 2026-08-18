@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+
+{% block title %}My Todos{% endblock %}
+
+{% block main %}
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <h2 class="mb-4">My Todos</h2>
+
+        <form action="{{ url_for('add') }}" method="post" class="mb-4">
+            <div class="input-group">
+                <input autocomplete="off" class="form-control" name="task" placeholder="What needs to be done?" type="text">
+                <button class="btn btn-success" type="submit">Add</button>
+            </div>
+        </form>
+
+        {% if todos %}
+            <ul class="list-group">
+                {% for todo in todos %}
+                    <li class="list-group-item d-flex align-items-center justify-content-between {% if todo.completed %}list-group-item-success{% endif %}">
+                        <div class="d-flex align-items-center">
+                            <form action="{{ url_for('toggle', todo_id=todo.id) }}" method="post" class="me-3">
+                                <button class="btn btn-sm {% if todo.completed %}btn-outline-secondary{% else %}btn-outline-success{% endif %}" type="submit">
+                                    {% if todo.completed %}&#10003;{% else %}&#9744;{% endif %}
+                                </button>
+                            </form>
+                            <span class="{% if todo.completed %}text-decoration-through text-muted{% endif %}">
+                                {{ todo.task }}
+                            </span>
+                        </div>
+                        <form action="{{ url_for('delete', todo_id=todo.id) }}" method="post">
+                            <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+                        </form>
+                    </li>
+                {% endfor %}
+            </ul>
+            <p class="text-muted mt-2">
+                {{ todos | selectattr("completed") | list | length }} of {{ todos | length }} completed
+            </p>
+        {% else %}
+            <div class="text-center text-muted mt-5">
+                <h5>No tasks yet</h5>
+                <p>Add a task above to get started!</p>
+            </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

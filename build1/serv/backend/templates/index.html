@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+
+{% block main %}
+{% set total = todos | length %}
+{% set done = todos | selectattr("completed") | list | length %}
+{% set active = total - done %}
+{% set percent = ((done / total) * 100) | round if total > 0 else 0 %}
+<div class="page-container">
+    <div class="page-header">
+        <h1 class="page-title">{{ t('tasks_title') }}</h1>
+        <p class="page-subtitle">{{ t('tasks_subtitle') }}</p>
+        <div class="stats-inline">
+            <div class="stat-chip total"><div class="stat-num">{{ total }}</div><div class="stat-lbl">{{ t('tasks_total') }}</div></div>
+            <div class="stat-chip active"><div class="stat-num">{{ active }}</div><div class="stat-lbl">{{ t('tasks_active') }}</div></div>
+            <div class="stat-chip done"><div class="stat-num">{{ done }}</div><div class="stat-lbl">{{ t('tasks_done') }}</div></div>
+        </div>
+    </div>
+
+    {% if total > 0 %}
+    <div class="progress-wrapper" style="padding:16px 0;margin-bottom:16px;">
+        <div class="progress-bar-custom">
+            <div class="progress-bar-fill" style="width: {{ percent }}%"></div>
+        </div>
+        <div class="progress-text">{{ percent }}{{ t('tasks_progress') }}</div>
+    </div>
+
+    <div class="todo-list-wrapper">
+        {% for todo in todos %}
+        <div class="todo-item {% if todo.completed %}completed{% endif %}" style="animation-delay: {{ loop.index0 * 0.05 }}s">
+            <form action="{{ url_for('toggle', todo_id=todo.id) }}" method="post" class="todo-check-form">
+                <button class="todo-check-btn {% if todo.completed %}checked{% endif %}" type="submit">
+                    {% if todo.completed %}<i class="fa-solid fa-check"></i>{% endif %}
+                </button>
+            </form>
+            <span class="todo-text">{{ todo.task }}</span>
+            <form action="{{ url_for('delete', todo_id=todo.id) }}" method="post" class="todo-delete-form">
+                <button class="todo-delete-btn" type="submit" title="{{ t('tasks_delete_title') }}">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </form>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state glass" style="padding:60px 20px;border-radius:var(--radius-sm);text-align:center;">
+        <div class="empty-state-icon"><i class="fa-regular fa-calendar-plus"></i></div>
+        <h3>{{ t('tasks_empty') }}</h3>
+        <p>{{ t('tasks_empty_hint') }}</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

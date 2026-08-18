@@ -1,0 +1,19 @@
+{% extends 'layout.html' %}
+{% block main %}
+{% set total = todos|length %}
+{% set done = todos|selectattr('completed')|list|length %}
+<div class="task-list">
+    {% for todo in todos %}
+    <article class="task-item {% if todo.completed %}is-complete{% endif %}">
+        <form action="{{ url_for('toggle', todo_id=todo.id) }}" method="post"><button class="task-check" type="submit" aria-label="Toggle task">{% if todo.completed %}<i class="fa-solid fa-check"></i>{% endif %}</button></form>
+        <span class="task-symbol symbol-{{ loop.index0 % 4 }}">{% if loop.index0 % 4 == 0 %}<i class="fa-solid fa-pen-ruler"></i>{% elif loop.index0 % 4 == 1 %}<i class="fa-solid fa-laptop-code"></i>{% elif loop.index0 % 4 == 2 %}<i class="fa-solid fa-gear"></i>{% else %}<i class="fa-solid fa-lightbulb"></i>{% endif %}</span>
+        <div class="task-copy"><h3>{{ todo.task }}</h3><p>{% if todo.completed %}Completed{% else %}Taskflow workspace · Edited just now{% endif %}</p></div>
+        <div class="task-avatars"><span class="mini-avatar">T</span><span class="mini-avatar warm">+</span></div>
+        <form action="{{ url_for('delete', todo_id=todo.id) }}" method="post"><button class="delete-task" type="submit" aria-label="Delete task"><i class="fa-solid fa-xmark"></i></button></form>
+    </article>
+    {% else %}
+    <div class="empty-tasks"><span><i class="fa-solid fa-list-check"></i></span><h3>{{ t('tasks_empty') }}</h3><p>{{ t('tasks_empty_hint') }}</p></div>
+    {% endfor %}
+</div>
+{% if total %}<div class="tasks-footer"><span>{{ done }} of {{ total }} completed</span><div class="progress-track"><span style="width:{{ (done / total * 100)|round }}%"></span></div></div>{% endif %}
+{% endblock %}

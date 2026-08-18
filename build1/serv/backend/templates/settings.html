@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% block main %}
+<div class="page-container">
+    <h1 class="page-title">{{ t('settings_title') }}</h1>
+    <div class="panel">
+        <div class="panel-title"><i class="fa-solid fa-gear"></i> {{ t('settings_general') }}</div>
+        <div class="settings-section">
+            <div class="setting-row">
+                <span>{{ t('settings_dark_theme') }}</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="setting-row">
+                <span>{{ t('settings_notifications') }}</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" checked>
+                    <span class="toggle-slider"></span>
+                </label>
+            </div>
+            <div class="setting-row">
+                <span>{{ t('settings_language') }}</span>
+                <div class="lang-switcher">
+                    {% for lang in supported_langs %}
+                    <a href="/lang/{{ lang }}" class="lang-btn {% if lang == current_lang %}active{% endif %}">
+                        {% if lang == 'uk' %}UA{% elif lang == 'ru' %}RU{% elif lang == 'en' %}EN{% endif %}
+                    </a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

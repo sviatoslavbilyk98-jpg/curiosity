@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="{{ current_lang }}">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Taskflow</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+{% if session.get('user_id') %}
+{% set user = current_user|default({'username': 'Guest', 'color': '#d88761'}, true) %}
+<div class="app-shell">
+    <aside class="sidebar-left" id="sidebar">
+        <div class="sidebar-head">
+            <a class="brand" href="{{ url_for('index') }}"><span class="brand-mark"><i class="fa-solid fa-circle-notch"></i></span><span>Taskflow</span></a>
+            <button class="mobile-close" type="button" aria-label="Close menu" onclick="toggleSidebar()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <nav class="main-menu" aria-label="Main navigation">
+            <a href="{{ url_for('index') }}" class="menu-item {% if request.endpoint == 'index' %}active{% endif %}"><i class="fa-solid fa-table-cells-large"></i><span>{{ t('menu_home') }}</span></a>
+            <a href="{{ url_for('activity') }}" class="menu-item {% if request.endpoint == 'activity' %}active{% endif %}"><i class="fa-solid fa-chart-simple"></i><span>{{ t('menu_activity') }}</span></a>
+            <a href="{{ url_for('index') }}#tasks" class="menu-item"><i class="fa-solid fa-rectangle-list"></i><span>{{ t('menu_tasks') }}</span>{% if todos is defined and todos|length %}<b>{{ todos|length }}</b>{% endif %}</a>
+            <a href="{{ url_for('messages') }}" class="menu-item {% if request.endpoint == 'messages' %}active{% endif %}"><i class="fa-solid fa-message"></i><span>{{ t('menu_messages') }}</span></a>
+            <a href="{{ url_for('communities') }}" class="menu-item {% if request.endpoint in ['communities', 'community_detail'] %}active{% endif %}"><i class="fa-solid fa-users"></i><span>{{ t('menu_communities') }}</span></a>
+            <a href="{{ url_for('settings') }}" class="menu-item {% if request.endpoint == 'settings' %}active{% endif %}"><i class="fa-solid fa-gear"></i><span>{{ t('menu_settings') }}</span></a>
+        </nav>
+
+        <section class="member-section">
+            <div class="section-label">All members <span><i class="fa-solid fa-chevron-left"></i><i class="fa-solid fa-chevron-right"></i></span></div>
+            {% for u in all_users|default([]) %}
+            <div class="member-row"><span class="avatar avatar-sm" style="background:{{ u.color }}">{{ u.username[0]|upper }}</span><span>{{ u.username }}</span></div>
+            {% else %}
+            <div class="member-row"><span class="avatar avatar-sm">T</span><span>Team member</span></div>
+            {% endfor %}
+        </section>
+
+        <a class="account-card" href="{{ url_for('cabinet') }}"><span class="avatar" style="background:{{ user.color|default('#d88761', true) }}">T</span><span><small>My account</small><strong>{{ user.username|default('Guest', true) }}</strong></span></a>
+    </aside>
+
+    <main class="workspace">
+        <header class="topbar">
+            <button class="menu-toggle" type="button" aria-label="Open menu" onclick="toggleSidebar()"><i class="fa-solid fa-bars"></i></button>
+            <div class="page-heading"><h1>Dashboard</h1><p id="currentDate"></p></div>
+            <label class="global-search"><i class="fa-solid fa-magnifying-glass"></i><input id="globalSearch" type="search" placeholder="{{ t('search_placeholder') }}"></label>
+            <div class="top-actions"><button aria-label="Add task" class="circle-action" type="button" onclick="document.querySelector('[name=task]').focus()"><i class="fa-solid fa-plus"></i></button><button aria-label="Notifications" class="circle-action" type="button"><i class="fa-regular fa-bell"></i></button><span class="avatar header-avatar" style="background:{{ user.color|default('#d88761', true) }}">T</span></div>
+        </header>
+
+        <div class="dashboard-grid">
+            <section class="main-content">
+                <a class="hero-banner" href="{{ url_for('plans') }}" aria-label="{{ t('menu_plans') }}"><img src="{{ url_for('static', filename='sample_' + current_lang + '.png') }}" alt="{{ t('menu_plans') }}"></a>
+                {% with messages = get_flashed_messages(with_categories=true) %}{% for category, message in messages %}<div class="flash-alert flash-{{ category }}">{{ message }}</div>{% endfor %}{% endwith %}
+                <div class="tasks-heading" id="tasks"><h2>Tasks</h2><button class="add-task-button" type="button" onclick="document.querySelector('[name=task]').focus()"><i class="fa-solid fa-plus"></i> Add tasks</button></div>
+                <form class="task-composer" action="{{ url_for('add') }}" method="post"><i class="fa-solid fa-magnifying-glass"></i><input name="task" autocomplete="off" required placeholder="{{ t('tasks_add_placeholder') }}"><button type="submit">Add</button></form>
+                {% block main %}{% endblock %}
+            </section>
+
+            <aside class="right-rail">
+                <div class="language-switcher">{% for language in supported_langs %}<a href="{{ url_for('set_lang', lang_code=language) }}" class="{% if language == current_lang %}active{% endif %}">{{ language|upper }}</a>{% endfor %}</div>
+                <section class="calendar-panel"><div class="calendar-title"><h2 id="calMonth"></h2><span><button class="calendar-nav" type="button" onclick="calNav(-1)"><i class="fa-solid fa-chevron-left"></i></button><button class="calendar-nav" type="button" onclick="calNav(1)"><i class="fa-solid fa-chevron-right"></i></button></span></div><div class="calendar-week" id="calWeek"></div><div class="calendar-grid" id="calGrid"></div></section>
+                <section class="rail-section"><div class="rail-title"><h2>Today's Activity</h2><a href="{{ url_for('activity') }}">See all</a></div><div class="activity-list">{% for a in activities|default([]) %}<div class="activity-row"><span class="activity-icon" style="background:{{ a.color }}"><i class="fa-solid {{ a.icon }}"></i></span><span><strong>{{ a.text }}</strong><small>{{ a.time }}</small></span><i class="fa-solid fa-chevron-right"></i></div>{% else %}<div class="activity-row"><span class="activity-icon blue"><i class="fa-solid fa-calendar-check"></i></span><span><strong>Plan your day</strong><small>Create your first task</small></span><i class="fa-solid fa-chevron-right"></i></div>{% endfor %}</div></section>
+                <section class="rail-section team-status"><div class="rail-title"><h2>Team Status</h2><a href="{{ url_for('communities') }}">See all</a></div>{% for u in all_users|default([]) %}<div class="status-row"><span class="avatar avatar-sm" style="background:{{ u.color }}">{{ u.username[0]|upper }}</span><span><strong>{{ u.username }}</strong><small>Team member</small></span><i class="fa-regular fa-message"></i></div>{% else %}<div class="status-row"><span class="avatar avatar-sm">T</span><span><strong>Taskflow team</strong><small>Online</small></span><i class="fa-regular fa-message"></i></div>{% endfor %}</section>
+            </aside>
+        </div>
+    </main>
+</div>
+{% else %}<main class="auth-layout">{% block auth %}{% endblock %}</main>{% endif %}
+<script>
+function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open')}
+const taskDates={{ task_dates|default([], true)|tojson }}; const today=new Date(); let calYear=today.getFullYear(),calMonth=today.getMonth();
+function renderCalendar(){const locale='{{ current_lang }}'==='uk'?'uk-UA':'{{ current_lang }}'==='ru'?'ru-RU':'en-US';document.getElementById('calMonth').textContent=new Intl.DateTimeFormat(locale,{month:'long',year:'numeric'}).format(new Date(calYear,calMonth));const weekday=new Intl.DateTimeFormat(locale,{weekday:'short'});document.getElementById('calWeek').innerHTML=Array.from({length:7},(_,i)=>`<span>${weekday.format(new Date(2024,0,i+1))}</span>`).join('');const first=new Date(calYear,calMonth,1),days=new Date(calYear,calMonth+1,0).getDate(),offset=(first.getDay()+6)%7;let html='';for(let i=0;i<offset;i++)html+='<span class="cal-day blank"></span>';for(let d=1;d<=days;d++){let date=`${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`,c='cal-day';if(d===today.getDate()&&calMonth===today.getMonth()&&calYear===today.getFullYear())c+=' today';if(taskDates.includes(date))c+=' has-task';html+=`<span class="${c}">${d}</span>`}document.getElementById('calGrid').innerHTML=html}function calNav(direction){calMonth+=direction;if(calMonth>11){calMonth=0;calYear++}if(calMonth<0){calMonth=11;calYear--}renderCalendar()}renderCalendar();
+document.getElementById('currentDate').textContent=new Intl.DateTimeFormat('{{ current_lang }}'==='uk'?'uk-UA':'{{ current_lang }}'==='ru'?'ru-RU':'en-US',{day:'numeric',month:'short',year:'numeric'}).format(today);
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+
+{% block auth %}
+<div class="auth-center">
+    <div class="auth-card glass" style="text-align:center;">
+        <div class="apology-code" style="font-size:3rem;font-weight:800;color:var(--accent);margin-bottom:12px;">{{ code }}</div>
+        <div class="apology-msg" style="color:var(--text-secondary);margin-bottom:28px;font-size:1rem;">{{ message }}</div>
+        <a href="/" class="btn-glass btn-glass-primary">{{ t('apology_back') }}</a>
+    </div>
+</div>
+{% endblock %}

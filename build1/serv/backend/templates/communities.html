@@ -1,0 +1,23 @@
+{% extends "layout.html" %}
+{% block main %}
+<div class="page-container">
+    <h1 class="page-title">{{ t('communities_title') }}</h1>
+    <div class="communities-grid">
+        {% for c in communities|default([]) %}
+        <a href="/communities/{{ c.id }}" class="community-card">
+            <div class="community-card-icon" style="background:{{ c.color }}">
+                <i class="fa-solid fa-users"></i>
+            </div>
+            <div class="community-card-name">{{ c.display_name }}</div>
+        </a>
+        {% endfor %}
+        {% if not communities %}
+        <div class="empty-state" style="grid-column: 1/-1;">
+            <i class="fa-solid fa-users empty-state-icon"></i>
+            <h3>{{ t('communities_empty') }}</h3>
+            <p>{{ t('communities_empty_hint') }}</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
